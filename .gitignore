@@ -6,11 +6,12 @@
 *.key
 
 # ВНИМАНИЕ: .business/ в ЭТОМ шаблоне - плейсхолдеры, они должны быть в git.
-# После онбординга (шаг 10a в AUTOPILOT.md) Клод добавит .business/ в .gitignore,
+# После онбординга (шаг 10a в AUTOPILOT.md) Codex добавит .business/ в .gitignore,
 # чтобы твои приватные данные не попадали в публичный репо.
 
-# Локальные настройки Claude Code
-.claude/settings.local.json
+# Локальные настройки Codex
+.codex/config.local.toml
+.codex/*.local.toml
 
 # Зависимости
 node_modules/

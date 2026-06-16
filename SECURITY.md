@@ -5,8 +5,8 @@
 Если ты нашёл потенциальную уязвимость в шаблоне (утечка секретов через hook, проблема в AUTOPILOT, которая может привести к потере данных пользователя, дыра в `scripts/security-audit.sh` и т.д.) — **НЕ открывай публичный issue**.
 
 Напиши приватно:
-- **GitHub Security Advisory:** [Report a vulnerability](https://github.com/artemiimillier/claude-code-starter/security/advisories/new) (предпочтительно)
-- **Email:** через Contact-форму профиля [@artemiimillier](https://github.com/artemiimillier)
+- **GitHub Security Advisory:** открой приватный advisory в текущем репозитории (предпочтительно)
+- **Личный контакт владельца репозитория:** укажи его в настройках своего GitHub-профиля или README, если публикуешь шаблон.
 
 Укажи:
 - Описание уязвимости
@@ -26,8 +26,8 @@
 
 - Несогласие с выбором методологии или структурой папок
 - Отсутствие фичи (это feature request)
-- Проблемы при установке окружения (VS Code, Claude Code, Node.js) — это в `TROUBLESHOOTING.md`
-- Уязвимости в Claude Code как продукте Anthropic — сообщай им напрямую
+- Проблемы при установке окружения (VS Code, Codex, Node.js) — это в `TROUBLESHOOTING.md`
+- Уязвимости в Codex как продукте OpenAI — сообщай им напрямую
 - Уязвимости в установленных через шаблон скилах (Bulletproof, Playwright, Skill Creator) — сообщай авторам соответствующих пакетов
 
 ## Таймлайн реакции

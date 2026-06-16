@@ -31,7 +31,7 @@
 ## Куда жаловаться
 
 - Через Issues (если нарушение публичное и не содержит ПДн)
-- Через [GitHub Security Advisory](https://github.com/artemiimillier/claude-code-starter/security/advisories/new) (приватно)
+- Через GitHub Security Advisory в текущем репозитории (приватно)
 
 Мы рассмотрим любое обращение в течение 7 дней.
 

@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         Спасибо за отчёт о баге. Перед отправкой:
-        - Убедись что это не проблема установки Claude Code / VS Code / Node.js — для этого смотри [TROUBLESHOOTING.md](../blob/main/TROUBLESHOOTING.md)
+        - Убедись что это не проблема установки Codex / VS Code / Node.js — для этого смотри [TROUBLESHOOTING.md](../blob/main/TROUBLESHOOTING.md)
         - Убедись что аналогичного issue ещё нет в открытых
 
   - type: textarea
@@ -14,7 +14,7 @@ body:
     attributes:
       label: Что случилось
       description: Коротко опиши что пошло не так
-      placeholder: Например — AUTOPILOT на шаге 5 не смог создать .claude/settings.json...
+      placeholder: Например — AUTOPILOT на шаге 5 не смог проверить .codex/hooks/pre_tool_use_policy.py...
     validations:
       required: true
 
@@ -35,7 +35,7 @@ body:
     id: expected
     attributes:
       label: Ожидаемое поведение
-      placeholder: Клод должен был создать файл с правилами безопасности
+      placeholder: Codex должен был создать файл с правилами безопасности
     validations:
       required: true
 
@@ -48,10 +48,10 @@ body:
       required: true
 
   - type: input
-    id: claude-code-version
+    id: codex-version
     attributes:
-      label: Версия Claude Code
-      description: В VS Code — Extensions → Claude Code → Uninstall/Reload dropdown показывает версию
+      label: Версия Codex
+      description: В VS Code — Extensions → Codex → Uninstall/Reload dropdown показывает версию
       placeholder: 0.xx.x
     validations:
       required: true
@@ -69,7 +69,7 @@ body:
     id: logs
     attributes:
       label: Логи / скриншоты
-      description: Скриншот чата Клода, вывод терминала. НЕ вставляй `.env` и секреты.
+      description: Скриншот чата Codex, вывод терминала. НЕ вставляй `.env` и секреты.
       render: shell
 
   - type: checkboxes

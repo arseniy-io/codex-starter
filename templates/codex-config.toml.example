@@ -1,0 +1,9 @@
+# Example Codex project config.
+#
+# Copy only the pieces you need into `.codex/config.toml`.
+# Keep personal preferences in your global Codex config, not in a project
+# template shared with a team.
+
+# Add project settings only after checking the current official docs for your
+# Codex surface:
+# https://developers.openai.com/codex

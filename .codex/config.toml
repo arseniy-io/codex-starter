@@ -1,0 +1,8 @@
+# Minimal project config for Codex.
+#
+# This file is intentionally empty except for comments. Add settings only after
+# checking the current official docs for the Codex surface you use.
+#
+# Keep personal preferences such as model, reasoning, sandbox, approval mode,
+# and notifications in your personal Codex config unless the whole team agrees
+# they belong in the repository.

@@ -6,8 +6,8 @@
 
 1. Найди в таблице задачу, которая совпадает с твоей.
 2. Открой файл по ссылке - там промпт целиком.
-3. Скопируй в чат Клоду. Подставь свои значения в квадратные скобки `[...]`.
-4. Выполняй шаги по подсказкам Клода.
+3. Используй файл как workflow-промпт: подставь свои значения в квадратные скобки `[...]`.
+4. Если Codex уже умеет выполнить задачу напрямую, попроси его прочитать нужный workflow и следовать ему.
 
 ## Таблица - если тебе надо, возьми
 
@@ -15,11 +15,11 @@
 
 | Задача | Промпт |
 |---|---|
-| Настроить голосовой ввод (Wispr Flow / дикt) + быстрые скриншоты | [`setup/01-voice-screenshot.md`](./setup/01-voice-screenshot.md) |
+| Настроить голосовой ввод (Wispr Flow / диктовка) + быстрые скриншоты | [`setup/01-voice-screenshot.md`](./setup/01-voice-screenshot.md) |
 | Звуковые хуки (уведомление при завершении задачи) | [`setup/02-hooks.md`](./setup/02-hooks.md) |
 | Защита от опасных команд (`rm -rf`, утечка `.env` и т.д.) | [`setup/03-security.md`](./setup/03-security.md) |
 | Интервью и заполнение `.business/` (fallback если AUTOPILOT не сработал) | [`setup/04-business-interview.md`](./setup/04-business-interview.md) |
-| Сгенерировать `CLAUDE.md` под свой проект | [`setup/05-claude-md-generation.md`](./setup/05-claude-md-generation.md) |
+| Сгенерировать `AGENTS.md` под свой проект | [`setup/05-agents-md-generation.md`](./setup/05-agents-md-generation.md) |
 | Создать папку `plans/` с правилами | [`setup/06-plans-folder.md`](./setup/06-plans-folder.md) |
 | Тест-цикл (проверить что всё работает) | [`setup/07-test-cycle.md`](./setup/07-test-cycle.md) |
 | Установить скилы (Bulletproof / Skill Creator / Frontend Design / PDF) с аудитом | [`setup/08-skills-install.md`](./setup/08-skills-install.md) |
@@ -37,7 +37,7 @@
 
 | Задача | Промпт |
 |---|---|
-| Критика плана через 3 параллельных субагента | [`methodology/plan-critique.md`](./methodology/plan-critique.md) |
+| Критика плана через 3 независимых ревью | [`methodology/plan-critique.md`](./methodology/plan-critique.md) |
 | «10 причин обосраться» - стресс-тест перед важным шагом | [`methodology/10-reasons.md`](./methodology/10-reasons.md) |
 | Импорт существующего кода в `.business/` | [`methodology/import-existing-project.md`](./methodology/import-existing-project.md) |
 | Планирование недели | [`methodology/weekly-planning.md`](./methodology/weekly-planning.md) |
@@ -46,4 +46,4 @@
 
 > «Прежде чем писать промпт с нуля - загляни в этот INDEX.»
 
-Это инвариант из `CLAUDE.md`. Клод сам это делает - но ты тоже помни.
+Это инвариант из `AGENTS.md`. Codex сам это делает - но ты тоже помни.

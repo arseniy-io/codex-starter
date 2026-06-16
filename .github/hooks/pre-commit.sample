@@ -10,6 +10,7 @@
 # - нет ли .env в коммите
 # - нет ли AWS/Stripe/OpenAI токенов
 # - нет ли SSH-ключей или private keys
+# - нет ли приватного .business/ после онбординга
 
 set -u
 
@@ -35,7 +36,23 @@ for file in $STAGED; do
   esac
 done
 
-# 2. Формальные паттерны секретов в содержимом
+# 2. .business/ после онбординга не коммитим случайно
+# Если ты осознанно публикуешь шаблонные placeholder-файлы, запусти:
+#   ALLOW_BUSINESS_COMMIT=1 git commit
+for file in $STAGED; do
+  case "$file" in
+    .business/*|*/.business/*)
+      if [ "${ALLOW_BUSINESS_COMMIT:-0}" != "1" ]; then
+        red "BLOCKED: попытка закоммитить $file"
+        red "  .business/ после онбординга может содержать приватную стратегию, экономику и данные клиентов."
+        red "  Если это осознанные placeholder-файлы шаблона: ALLOW_BUSINESS_COMMIT=1 git commit"
+        FAIL=1
+      fi
+      ;;
+  esac
+done
+
+# 3. Формальные паттерны секретов в содержимом
 for file in $STAGED; do
   if [ -f "$file" ]; then
     # API keys в парах key=value

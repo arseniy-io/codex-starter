@@ -5,7 +5,7 @@
 # - нет инфраструктурных идентификаторов автора методологии
 # - нет email / имён из окружения автора и его студентов
 # - нет секретов в виде формальных паттернов
-# - нет запрещённых файлов (.env, .env.local, .claude/settings.local.json)
+# - нет запрещённых файлов (.env, .env.local, .codex/config.local.toml)
 # - бренд smyslokod встречается только в разрешённых местах
 #
 # Запуск:
@@ -64,12 +64,12 @@ check "Stripe / OpenAI live-ключи" \
 hdr "6. Запрещённые файлы"
 if [ -f .env ];                           then red "FAIL: .env present"; FAIL=1;                 else green "OK: no .env"; fi
 if [ -f .env.local ];                     then red "FAIL: .env.local present"; FAIL=1;           else green "OK: no .env.local"; fi
-if [ -f .claude/settings.local.json ];    then red "FAIL: .claude/settings.local.json"; FAIL=1; else green "OK: no settings.local.json"; fi
+if [ -f .codex/config.local.toml ];       then red "FAIL: .codex/config.local.toml"; FAIL=1; else green "OK: no config.local.toml"; fi
 
 hdr "7. Бренд smyslokod (допускается только в 3 местах)"
 BRAND_HITS=$(grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=scripts 2>/dev/null | wc -l | tr -d ' ')
 if [ "$BRAND_HITS" -le 8 ]; then
-  green "OK: $BRAND_HITS упоминаний (в пределах разрешённого - README URL/footer + AUTOPILOT приветствие/CTA + CLAUDE.md приветствие + skill attribution)"
+  green "OK: $BRAND_HITS упоминаний (в пределах разрешённого - README URL/footer + AUTOPILOT приветствие/CTA + AGENTS.md приветствие + skill attribution)"
   grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=scripts 2>/dev/null | sed 's/^/  /'
 else
   yellow "WARN: $BRAND_HITS упоминаний - проверь вручную что это только CTA/footer/URL"
