@@ -8,6 +8,7 @@
 - [ ] `README.md` объясняет быстрый старт без устаревающих цен, тарифов и неподтверждённых обещаний.
 - [ ] `AGENTS.md` содержит только устойчивые правила проекта.
 - [ ] `AUTOPILOT.md` можно пройти по шагам без чтения исходного README.
+- [ ] `AUTOPILOT.md` предлагает компактный и расширенный путь `.business/` и объясняет разницу.
 - [ ] `POST_AUTOPILOT.md` можно пройти после первого онбординга, не раздувая `AGENTS.md`.
 
 ## Codex-native
@@ -30,10 +31,10 @@
 - [ ] `.env`, `.env.local`, `.env.*.local` игнорируются.
 - [ ] `.codex/config.local.toml` игнорируется.
 - [ ] `.business/` снимается с tracking после заполнения реальными данными.
-- [ ] После заполнения `ai-clone/` решено, остаётся ли он в приватном repo или снимается с tracking.
+- [ ] После заполнения `ai-clone/` privacy-gate зафиксировал решение: private tracked, ignored или safe summary only.
 - [ ] `mastery/` не содержит длинных копий copyrighted-текста.
 - [ ] Pre-commit hook блокирует секреты и случайный коммит `.business/`.
-- [ ] `scripts/security-audit.sh` проходит.
+- [ ] Security audit проходит: `scripts/security-audit.ps1` на Windows или `scripts/security-audit.sh` в bash/Git Bash.
 - [ ] `.codex/hooks/pre_tool_use_policy.py` блокирует опасные shell/PowerShell примеры.
 
 ## Example
@@ -48,5 +49,6 @@
 - [ ] Открыть новый Codex-чат с чистым контекстом.
 - [ ] Написать `привет`.
 - [ ] Проверить, что AUTOPILOT стартует и ведёт по шагам.
+- [ ] Проверить, что AUTOPILOT предлагает компактный/расширенный путь `.business/`.
 - [ ] Проверить, что после AUTOPILOT предлагается `POST_AUTOPILOT.md`.
-- [ ] Пройти тест-цикл `plan → implement → verify → retro`.
+- [ ] Проверить, что `plan → implement → verify → retro` объясняется без обязательного `hello-test` в корне проекта.

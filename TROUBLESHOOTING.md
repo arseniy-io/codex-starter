@@ -111,6 +111,20 @@ echo '{"tool":"shell","input":{"command":"git status --short"}}' | python .codex
 
 Первый пример должен вернуть `decision: block`, второй - `decision: allow`.
 
+### Security audit не запускается через `bash` на Windows
+
+Если `bash scripts/security-audit.sh` уходит в WSL и падает, запусти PowerShell-версию:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1
+```
+
+Если хочешь использовать bash, запускай через Git Bash напрямую:
+
+```powershell
+& 'C:\Program Files\Git\bin\bash.exe' scripts/security-audit.sh
+```
+
 ### Случайно закоммитил `.env`
 
 1. Удали файл из индекса:
