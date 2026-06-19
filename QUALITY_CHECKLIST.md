@@ -9,6 +9,7 @@
 - [ ] `AGENTS.md` содержит только устойчивые правила проекта.
 - [ ] `AUTOPILOT.md` можно пройти по шагам без чтения исходного README.
 - [ ] `AUTOPILOT.md` предлагает компактный и расширенный путь `.business/` и объясняет разницу.
+- [ ] В чистом starter `AUTOPILOT.md` начинается с `completed: false`, `last_completed_step: 0`, `started_at: null` и не содержит заполненных `os`, `project_type`, `stack`.
 - [ ] `POST_AUTOPILOT.md` можно пройти после первого онбординга, не раздувая `AGENTS.md`.
 
 ## Codex-native
