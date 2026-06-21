@@ -323,11 +323,15 @@ git ls-files 'ai-clone/*' 'mastery/*'
 
 Для `ai-clone/`:
 
+Windows/PowerShell и macOS/Linux:
+
 ```bash
 git rm -r --cached ai-clone/
 ```
 
 Для `mastery/`:
+
+Windows/PowerShell и macOS/Linux:
 
 ```bash
 git rm -r --cached mastery/
@@ -351,4 +355,4 @@ privacy_mastery: tracked|ignored|needs_review
 - [ ] Если `ai-clone/` заполнен личными данными, решено: коммитить в приватный repo или добавить в `.gitignore` и снять с tracking.
 - [ ] Если `mastery/` содержит материалы из внешних источников, там нет длинных копий copyrighted-текста.
 - [ ] `git diff --check` проходит.
-- [ ] `scripts/security-audit.sh` проходит.
+- [ ] Security audit проходит: `scripts/security-audit.ps1` на Windows или `scripts/security-audit.sh` на macOS/Linux.
