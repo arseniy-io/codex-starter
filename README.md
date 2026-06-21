@@ -18,7 +18,7 @@
 
 - `.business/` - адаптивный контекст проекта. Для маленького проекта AUTOPILOT может создать компактный набор файлов; для сложного продукта - расширенную структуру: продукт, аудитория, цели, экономика, маркетинг, бренд.
 - `ai-clone/` - личный контекст автора решений: голос, принципы, стиль мышления, feedback.
-- `mastery/` - методологии и экспертные подходы, которые Codex читает точечно под задачу.
+- `mastery/` - авторские экспертные линзы и методы, которые Codex читает точечно под задачу.
 - `PROJECT_STATE.md` - короткий вход для нового окна Codex: текущий фокус, что читать сначала и что не трогать без причины.
 - `AGENTS.md` - долговременные правила для Codex в этом репозитории.
 - `.codex/` - project-level config и место для guardrails.
@@ -82,7 +82,7 @@ codex-starter/
 ## Безопасность
 
 - `.env` и `.env.local` уже добавлены в `.gitignore`.
-- `.business/` сначала tracked, чтобы показать структуру. После заполнения реальными данными AUTOPILOT добавит `.business/` в `.gitignore` и снимет папку с git tracking.
+- `.business/` по умолчанию игнорируется: AUTOPILOT создаёт её локально, потому что там быстро появляются приватная стратегия, экономика, клиенты и рабочие решения. Пример структуры смотри в `examples/` и `templates/`.
 - `ai-clone/` и `mastery/` сначала tracked как плейсхолдеры. После заполнения `POST_AUTOPILOT.md` проводит privacy-gate: оставить в приватном repo, снять с tracking или оставить только безопасную короткую версию.
 - Pre-commit hook проверяет staged-файлы на секреты:
 
@@ -91,8 +91,21 @@ cp .github/hooks/pre-commit.sample .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
-- `.codex/hooks/pre_tool_use_policy.py` содержит проверяемый policy-скрипт для опасных команд. Подключай его к Codex hooks по актуальной официальной схеме.
-- Security audit можно запускать без WSL:
+- `.codex/hooks.json` подключает project-level `PreToolUse` hook для shell-команд.
+- `.codex/hooks/pre_tool_use_policy.py` содержит проверяемый policy-скрипт для опасных команд. В новом окружении Codex может попросить trust-review для project-local hooks.
+- Для реального проекта после AUTOPILOT запускай мягкую проверку:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/user-project-safety-check.ps1
+```
+
+или:
+
+```bash
+bash scripts/user-project-safety-check.sh
+```
+
+- Для публикации самого starter-template запускай полный publication audit:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1
@@ -102,6 +115,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1
 
 ```bash
 bash scripts/security-audit.sh
+```
+
+Проверить hook-policy вручную:
+
+```bash
+echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/pre_tool_use_policy.py
 ```
 
 ## Как работать после онбординга

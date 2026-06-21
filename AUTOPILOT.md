@@ -35,6 +35,7 @@ started_at: null
 6. Не коммить `.business/` после заполнения реальными данными.
 7. Если AUTOPILOT проходит в тестовой копии, все изменения, планы, ретро и отчёты пиши только внутри этой копии. Не меняй основной starter.
 8. Все Markdown-файлы сохраняй в UTF-8, чтобы отчёты читались без mojibake/вопросиков.
+9. Не говори, что AUTOPILOT завершён, пока frontmatter не обновлён до `completed: true`, `current_stage: done`, `last_completed_step: 10`.
 
 ## Progress-поля
 
@@ -90,6 +91,7 @@ started_at: null
 
 - `AGENTS.md` - durable-инструкции для репозитория.
 - `.codex/config.toml` - project-level настройки Codex.
+- `.codex/hooks.json` - подключение project hooks.
 - `.codex/hooks/` - deterministic guardrails.
 - `.agents/skills/` - локальные repo-skills, если проекту нужны reusable workflows.
 
@@ -102,10 +104,11 @@ started_at: null
 Сделай три проверки:
 
 1. В `.gitignore` есть `.env`, `.env.local`, `.codex/config.local.toml`.
-2. Security audit проходит:
-   - Windows/PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1`;
-   - macOS/Linux/Git Bash: `bash scripts/security-audit.sh`.
-3. `.codex/hooks/pre_tool_use_policy.py` блокирует опасный пример:
+2. User project safety check проходит:
+   - Windows/PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/user-project-safety-check.ps1`;
+   - macOS/Linux/Git Bash: `bash scripts/user-project-safety-check.sh`.
+3. `.codex/hooks.json` подключает `PreToolUse` hook для shell-команд.
+4. `.codex/hooks/pre_tool_use_policy.py` блокирует опасный пример:
 
 Windows/PowerShell:
 
@@ -119,7 +122,7 @@ macOS/Linux/Git Bash:
 echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/pre_tool_use_policy.py
 ```
 
-Объясни пользователю: hook-policy не заменяет осторожность, но ловит очевидно опасные команды.
+Объясни пользователю: `user-project-safety-check` проверяет только общие риски проекта. `scripts/security-audit.*` нужен для публикации самого starter-template и содержит дополнительные проверки автора/бренда. Hook-policy не заменяет осторожность, но ловит очевидно опасные команды. В новом окружении Codex может попросить trust-review для project-local hooks.
 
 Обнови progress: `last_completed_step: 5`, `current_stage: git`, `last_completed_substep: null`.
 
@@ -128,14 +131,17 @@ echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/p
 Проверь:
 
 ```bash
+git rev-parse --is-inside-work-tree
 git config user.name
 git config user.email
 git status --short --branch
 ```
 
-Если имя/email пустые, спроси пользователя и настрой локально для проекта.
+Если папка не является git-репозиторием, не запускай `git init` автоматически. Скажи: «Git здесь не инициализирован, поэтому шаги stage/commit пропущу. Онбординг можно продолжить, но финальный commit будет недоступен в этой копии». Обнови progress как обычно и запиши `last_completed_substep: git_unavailable`.
 
-Обнови progress: `last_completed_step: 6`, `current_stage: business_pause`, `last_completed_substep: null`.
+Если git доступен и имя/email пустые, спроси пользователя и настрой локально для проекта.
+
+Обнови progress: `last_completed_step: 6`, `current_stage: business_pause`, `last_completed_substep: git_checked|git_unavailable`.
 
 ## Шаг 7. Пауза перед бизнес-интервью
 
@@ -160,6 +166,8 @@ git status --short --branch
 - `deep` - SaaS, marketplace, продукт с ролями, платежами, интеграциями, пользовательскими данными или долгим roadmap. Цель: кроме обычного бизнес-контекста создать короткие файлы про scope, роли, данные, security/trust и интеграции.
 
 Если пользователь просит пройти быстро или проект маленький, рекомендуй `lite` и скажи, что `POST_AUTOPILOT.md`, `ai-clone/`, `mastery/`, глубокие методологии и опциональные интеграции можно оставить на потом.
+
+Целевой стартовый маршрут после онбординга: `lite` - 3-4 файла всего, `standard` - 4-5 файлов всего, `deep` - 5-6 файлов всего вместе с `AGENTS.md`, `PROJECT_STATE.md` и `.business/INDEX.md`.
 
 Скажи коротко:
 
@@ -231,7 +239,7 @@ onboarding_depth: lite|standard|deep
 Проверь вход нового окна Codex:
 
 1. Назови маршрут чтения для новой сессии: `AGENTS.md` -> `PROJECT_STATE.md` -> `.business/INDEX.md` -> 1-3 нужных файла.
-2. Для `lite` маршрут должен занимать 3-4 файла, для `standard` - 4-5 файлов, для `deep` - 5 файлов плюс короткая deep-карта в `PROJECT_STATE.md`.
+2. Для `lite` маршрут должен занимать 3-4 файла всего, для `standard` - 4-5 файлов всего, для `deep` - 5-6 файлов всего вместе с короткой deep-картой в `PROJECT_STATE.md`.
 3. Если для понимания проекта нужно больше файлов, не продолжай онбординг. Сначала сократи `PROJECT_STATE.md`, обнови `.business/INDEX.md` и убери лишние файлы из обязательного чтения.
 4. Это не аудит всей папки. Проверяй только стартовый маршрут и минимальный набор чтения.
 5. Для отдельной проверки starter перед публикацией используй `autopilot/NEW_WINDOW_TEST.md`.
@@ -249,12 +257,22 @@ onboarding_depth: lite|standard|deep
 
 Обнови progress: `last_completed_step: 9`, `current_stage: final_commit`, `current_flow: null`, `last_completed_substep: final_files_created`.
 
+Перед переходом к шагу 10 проверь, что `AGENTS.md` и `PROJECT_STATE.md` уже записаны после preview/подтверждения, а стартовый маршрут укладывается в лимит выбранного flow. Если нет - не переходи к финалу, сначала исправь маршрут.
+
 ## Шаг 10. Финал и первый коммит
 
-Перед коммитом:
+Сначала проверь, есть ли git-репозиторий:
 
-1. Добавь `.business/` в `.gitignore`, если там уже реальные данные.
-2. Сними `.business/` с tracking:
+```bash
+git rev-parse --is-inside-work-tree
+```
+
+Если git недоступен, это не блокирует завершение AUTOPILOT в тестовой копии или локальной папке без repo. Скажи, что stage/commit пропущены из-за отсутствия `.git`, и переходи к финальному обновлению frontmatter.
+
+Если git доступен, перед коммитом:
+
+1. Убедись, что `.business/` есть в `.gitignore`. В starter она должна быть ignored по умолчанию, потому что после онбординга там реальные данные проекта.
+2. Если `.business/` когда-либо была tracked, сними её с tracking:
 
 Windows/PowerShell:
 
@@ -269,7 +287,7 @@ macOS/Linux/Git Bash:
 if [ -n "$(git ls-files '.business/*')" ]; then git rm -r --cached .business/; fi
 ```
 
-3. Убедись, что `.env` и локальные Codex config не попали в индекс.
+3. Убедись, что `.business/`, `.env` и локальные Codex config не попали в индекс.
 4. Покажи `git status --short` и коротко объясни, какие файлы предлагаешь включить в первый коммит.
 
 Если всё чисто и пользователь согласен, стейджи файлы поимённо. Не используй `git add -A` как основной путь.
@@ -277,7 +295,7 @@ if [ -n "$(git ls-files '.business/*')" ]; then git rm -r --cached .business/; f
 Шаблон команды:
 
 ```bash
-git add -- AGENTS.md PROJECT_STATE.md .gitignore .codex/config.toml .codex/hooks/pre_tool_use_policy.py
+git add -- AGENTS.md PROJECT_STATE.md .gitignore .codex/config.toml .codex/hooks.json .codex/hooks/pre_tool_use_policy.py
 ```
 
 Добавь к команде только те файлы, которые реально изменены и безопасны для первого коммита. Если список длинный, сначала покажи его пользователю и попроси подтверждение.
@@ -298,7 +316,7 @@ git commit -m "chore: initial setup via codex-starter"
 
 Почему: даже первый коммит должен быть контролируемым. В обычной работе и в финале AUTOPILOT стейджить файлы поимённо.
 
-Покажи `prompts/INDEX.md` и выдели три первых полезных промпта:
+Если пользователь хочет продолжать настройку, покажи `prompts/INDEX.md` и выдели три первых полезных промпта. Это optional follow-up, не условие завершения базового AUTOPILOT:
 
 - `prompts/setup/01-voice-screenshot.md`
 - `prompts/methodology/plan-critique.md`
@@ -314,8 +332,10 @@ last_completed_step: 10
 last_completed_substep: onboarding_complete
 ```
 
+После обновления frontmatter перечитай первые строки `AUTOPILOT.md` и убедись, что там действительно `completed: true`, `current_stage: done`, `last_completed_step: 10`. Только после этого говори, что онбординг завершён.
+
 Скажи:
 
 > «Онбординг завершён. Теперь в новом окне Codex сначала читает `AGENTS.md`, затем `PROJECT_STATE.md`, берёт только нужный контекст, пишет план, реализует, проверяет и оставляет ретро.»
 
-Если пользователь хочет второй уровень настройки, предложи продолжить по `POST_AUTOPILOT.md`: личный контекст, mastery, feedback loop, контекст-инжиниринг и опциональные интеграции.
+Если пользователь хочет второй уровень настройки, предложи продолжить по `POST_AUTOPILOT.md`: личный контекст, mastery, feedback loop, контекст-инжиниринг и опциональные интеграции. Для `lite` и большинства быстрых проходов подчеркни, что это отдельный необязательный этап, а не часть базового онбординга.

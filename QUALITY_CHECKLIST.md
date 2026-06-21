@@ -26,6 +26,9 @@
 - [ ] Сложный продукт с ролями, данными, платежами, API, файлами или интеграциями получает отдельный risk/trust слой.
 - [ ] В `deep` есть блок `MVP vs later`, а новые файлы создаются только если влияют на MVP, trust/security или ближайшее решение.
 - [ ] `PROJECT_STATE.md` для `deep` содержит короткую карту `Scope/MVP`, `Data`, `Roles`, `Integrations`, `Trust/Security`, `MVP vs later`.
+- [ ] AUTOPILOT нельзя считать завершённым, пока frontmatter не показывает `completed: true`, `current_stage: done`, `last_completed_step: 10`.
+- [ ] Если папка не является git-репозиторием, AUTOPILOT пропускает stage/commit без ошибки и не запускает `git init` автоматически.
+- [ ] `POST_AUTOPILOT.md` явно предлагается как необязательный второй этап, особенно для `lite`.
 - [ ] В личном экспертном проекте `.business/`, `ai-clone/` и `mastery/` не смешиваются.
 - [ ] В `.business/INDEX.md` есть минимальный набор файлов, которые Codex обычно должен читать дальше.
 - [ ] `PROJECT_STATE.md` не дублирует `.business/`, `ai-clone/`, `mastery/`, планы или ретро.
@@ -60,12 +63,14 @@
 
 - [ ] `.env`, `.env.local`, `.env.*.local` игнорируются.
 - [ ] `.codex/config.local.toml` игнорируется.
-- [ ] `.business/` снимается с tracking после заполнения реальными данными.
+- [ ] `.business/` игнорируется по умолчанию и снимается с tracking, если была случайно tracked.
 - [ ] После заполнения `ai-clone/` privacy-gate зафиксировал решение: private tracked, ignored или safe summary only.
 - [ ] `mastery/` не содержит длинных копий copyrighted-текста.
 - [ ] Финальный commit делается только после просмотра staged-файлов и отдельного подтверждения пользователя.
 - [ ] Pre-commit hook блокирует секреты и случайный коммит `.business/`.
-- [ ] Security audit проходит: `scripts/security-audit.ps1` на Windows или `scripts/security-audit.sh` в bash/Git Bash.
+- [ ] User project safety check проходит: `scripts/user-project-safety-check.ps1` на Windows или `scripts/user-project-safety-check.sh` в bash/Git Bash.
+- [ ] Перед публикацией starter проходит publication audit: `scripts/security-audit.ps1` или `scripts/security-audit.sh`.
+- [ ] `.codex/hooks.json` подключает `PreToolUse` hook для shell-команд.
 - [ ] `.codex/hooks/pre_tool_use_policy.py` блокирует опасные shell/PowerShell примеры.
 
 ## Example
@@ -82,7 +87,7 @@
 - [ ] Проверить, что AUTOPILOT стартует и ведёт по шагам.
 - [ ] Проверить, что AUTOPILOT выбирает один масштаб `lite`, `standard` или `deep`.
 - [ ] Проверить, что Codex читает `autopilot/flows/common.md` и только выбранный flow.
-- [ ] Проверить, что после AUTOPILOT предлагается `POST_AUTOPILOT.md`.
+- [ ] Проверить, что после AUTOPILOT `POST_AUTOPILOT.md` предлагается как опциональный второй этап, а не обязательное продолжение.
 - [ ] Проверить, что `plan → implement → verify → retro` объясняется без обязательного `hello-test` в корне проекта.
 - [ ] В новом окне Codex может назвать текущий фокус и следующий шаг, не читая всю `.business/`.
 - [ ] Для публикации starter пройти `autopilot/NEW_WINDOW_TEST.md` и записать один главный следующий пункт улучшения.

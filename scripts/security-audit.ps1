@@ -1,7 +1,11 @@
 <#
 scripts/security-audit.ps1
 
-Windows-friendly security audit for Codex Starter.
+Windows-friendly publication audit for Codex Starter.
+
+Use this before publishing or changing the starter-template itself.
+For a real user project after AUTOPILOT, use:
+  powershell -NoProfile -ExecutionPolicy Bypass -File scripts/user-project-safety-check.ps1
 
 Run:
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1

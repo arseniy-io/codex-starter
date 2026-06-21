@@ -39,9 +39,9 @@
 
 Минимальный маршрут чтения:
 
-- для `lite` - `.business/INDEX.md` и 1-3 коротких файла;
-- для `standard` - `.business/INDEX.md` и 2-4 нужных файла;
-- для `deep` - `.business/INDEX.md`, короткая deep-карта в `PROJECT_STATE.md` и нужные risk/scope-файлы.
+- для `lite` - 3-4 файла всего: `AGENTS.md`, `PROJECT_STATE.md`, `.business/INDEX.md` и 0-1 короткий файл по задаче;
+- для `standard` - 4-5 файлов всего: `AGENTS.md`, `PROJECT_STATE.md`, `.business/INDEX.md` и 1-2 нужных файла;
+- для `deep` - 5-6 файлов всего: `AGENTS.md`, `PROJECT_STATE.md`, `.business/INDEX.md`, deep-карта в `PROJECT_STATE.md` и 2-3 risk/scope-файла.
 
 Не указывай всю `.business/` как обязательное чтение.
 
@@ -53,3 +53,4 @@
 2. Проверь, что новое окно Codex может понять проект через короткий маршрут.
 3. Если маршрут раздут, сначала сократи `.business/INDEX.md` и `PROJECT_STATE.md`.
 4. Обнови progress: `last_completed_step: 8`, `current_stage: final_files`, `current_flow: null`, `last_completed_substep: business_index_checked`.
+5. Не называй AUTOPILOT завершённым после шага 8. После этого обязательно вернись в `AUTOPILOT.md` и выполни шаги 9-10.
