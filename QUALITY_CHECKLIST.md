@@ -9,8 +9,9 @@
 - [ ] `AGENTS.md` содержит только устойчивые правила проекта.
 - [ ] `PROJECT_STATE.md` короткий и показывает текущий фокус, первые файлы для чтения и следующий шаг.
 - [ ] `AUTOPILOT.md` можно пройти по шагам без чтения исходного README.
-- [ ] `AUTOPILOT.md` предлагает компактный и расширенный путь `.business/` и объясняет разницу.
-- [ ] В чистом starter `AUTOPILOT.md` начинается с `completed: false`, `last_completed_step: 0`, `started_at: null` и не содержит заполненных `os`, `project_type`, `stack`.
+- [ ] `AUTOPILOT.md` выбирает один масштаб `lite`, `standard` или `deep`, а подробности шага 8 лежат в `autopilot/flows/`.
+- [ ] Перед заменой финальных `AGENTS.md` и `PROJECT_STATE.md` AUTOPILOT показывает preview и ждёт подтверждения.
+- [ ] В чистом starter `AUTOPILOT.md` начинается с `completed: false`, `current_stage: start`, `current_flow: null`, `last_completed_step: 0`, `last_completed_substep: null`, `started_at: null` и не содержит заполненных `os`, `project_type`, `stack`.
 - [ ] `POST_AUTOPILOT.md` можно пройти после первого онбординга, не раздувая `AGENTS.md`.
 
 ## Adaptivity
@@ -62,6 +63,7 @@
 - [ ] `.business/` снимается с tracking после заполнения реальными данными.
 - [ ] После заполнения `ai-clone/` privacy-gate зафиксировал решение: private tracked, ignored или safe summary only.
 - [ ] `mastery/` не содержит длинных копий copyrighted-текста.
+- [ ] Финальный commit делается только после просмотра staged-файлов и отдельного подтверждения пользователя.
 - [ ] Pre-commit hook блокирует секреты и случайный коммит `.business/`.
 - [ ] Security audit проходит: `scripts/security-audit.ps1` на Windows или `scripts/security-audit.sh` в bash/Git Bash.
 - [ ] `.codex/hooks/pre_tool_use_policy.py` блокирует опасные shell/PowerShell примеры.
@@ -78,7 +80,9 @@
 - [ ] Открыть новый Codex-чат с чистым контекстом.
 - [ ] Написать `привет`.
 - [ ] Проверить, что AUTOPILOT стартует и ведёт по шагам.
-- [ ] Проверить, что AUTOPILOT предлагает компактный/расширенный путь `.business/`.
+- [ ] Проверить, что AUTOPILOT выбирает один масштаб `lite`, `standard` или `deep`.
+- [ ] Проверить, что Codex читает `autopilot/flows/common.md` и только выбранный flow.
 - [ ] Проверить, что после AUTOPILOT предлагается `POST_AUTOPILOT.md`.
 - [ ] Проверить, что `plan → implement → verify → retro` объясняется без обязательного `hello-test` в корне проекта.
 - [ ] В новом окне Codex может назвать текущий фокус и следующий шаг, не читая всю `.business/`.
+- [ ] Для публикации starter пройти `autopilot/NEW_WINDOW_TEST.md` и записать один главный следующий пункт улучшения.
