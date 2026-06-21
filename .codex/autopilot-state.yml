@@ -1,0 +1,22 @@
+# Mutable state for Codex Starter onboarding.
+# AUTOPILOT.md and POST_AUTOPILOT.md are stable scenario files; update this
+# file while onboarding instead of editing their headers.
+
+autopilot:
+  completed: false
+  current_stage: start
+  current_flow: null
+  last_completed_step: 0
+  last_completed_substep: null
+  started_at: null
+  os: null
+  project_type: null
+  stack: null
+  onboarding_depth: null
+
+post_autopilot:
+  completed: false
+  last_completed_stage: 0
+  started_at: null
+  privacy_ai_clone: null
+  privacy_mastery: null

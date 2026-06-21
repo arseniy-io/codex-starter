@@ -1,24 +1,19 @@
----
-completed: false
-last_completed_stage: 0
-started_at: null
----
-
 # POST_AUTOPILOT - второй этап настройки Codex Starter
 
 > Это продолжение после `AUTOPILOT.md`. Первый AUTOPILOT настраивает базовый проект. Этот файл добавляет второй уровень: личный контекст, методологии, правила обратной связи и опциональные интеграции.
 
 ## Правила для Codex
 
-1. Иди по этапам сверху вниз и обновляй `last_completed_stage`.
-2. Перед каждым этапом коротко объясняй, что будет создано и зачем.
-3. Не дублируй то, что уже сделал `AUTOPILOT.md`: `.business/`, `plans/`, `retrospectives/`, базовый `AGENTS.md`, security hooks.
-4. Не переноси инструкции из других инструментов без адаптации под Codex.
-5. Если этап зависит от актуальной Codex-документации, сначала проверь docs. Если docs недоступны - остановись.
-6. Не создавай большие библиотеки без правил чтения. У каждой новой папки должен быть `INDEX.md` или README.
-7. Codex должен читать только нужные файлы под задачу, а не весь контекст целиком.
-8. Перед завершением обязательно пройди privacy-gate для `ai-clone/` и `mastery/`.
-9. После финальной проверки обнови `completed: true` и `last_completed_stage: 8`.
+1. Перед стартом открой `.codex/autopilot-state.yml` и прочитай секцию `post_autopilot`.
+2. Иди по этапам сверху вниз и обновляй `post_autopilot.last_completed_stage`.
+3. Перед каждым этапом коротко объясняй, что будет создано и зачем.
+4. Не дублируй то, что уже сделал `AUTOPILOT.md`: `.business/`, `plans/`, `retrospectives/`, базовый `AGENTS.md`, security hooks.
+5. Не переноси инструкции из других инструментов без адаптации под Codex.
+6. Если этап зависит от актуальной Codex-документации, сначала проверь docs. Если docs недоступны - остановись.
+7. Не создавай большие библиотеки без правил чтения. У каждой новой папки должен быть `INDEX.md` или README.
+8. Codex должен читать только нужные файлы под задачу, а не весь контекст целиком.
+9. Перед завершением обязательно пройди privacy-gate для `ai-clone/` и `mastery/`.
+10. После финальной проверки обнови `post_autopilot.completed: true` и `post_autopilot.last_completed_stage: 8`.
 
 ## Этап 1. `ai-clone/`
 
@@ -295,7 +290,7 @@ started_at: null
 
 ## Финальная проверка
 
-Перед тем как ставить `completed: true`, пройди privacy-gate.
+Перед тем как ставить `post_autopilot.completed: true`, пройди privacy-gate.
 
 ### Privacy-gate
 
@@ -349,14 +344,15 @@ git rm -r --cached mastery/
 
 Добавляй в `.gitignore` только те папки, которые пользователь решил не хранить в git.
 
-Запиши решение во frontmatter:
+Запиши решение в `.codex/autopilot-state.yml`:
 
 ```yaml
-privacy_ai_clone: tracked_private|ignored|safe_summary_only|undecided
-privacy_mastery: tracked|ignored|needs_review
+post_autopilot:
+  privacy_ai_clone: tracked_private|ignored|safe_summary_only|undecided
+  privacy_mastery: tracked|ignored|needs_review
 ```
 
-Если `privacy_ai_clone: undecided` или `privacy_mastery: needs_review`, не ставь `completed: true`.
+Если `post_autopilot.privacy_ai_clone: undecided` или `post_autopilot.privacy_mastery: needs_review`, не ставь `post_autopilot.completed: true`.
 
 - [ ] Нет устаревших файлов, папок и команд из исходной инструкции под другой инструмент.
 - [ ] Первый `AUTOPILOT.md` остался коротким.

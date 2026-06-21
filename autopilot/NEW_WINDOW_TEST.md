@@ -23,7 +23,7 @@
 2. Напиши: `привет`.
 3. Ожидаемое поведение:
    - Codex читает `AGENTS.md`;
-   - видит `AUTOPILOT.md` с `completed: false`;
+   - видит `AUTOPILOT.md` и `.codex/autopilot-state.yml` с `autopilot.completed: false`;
    - предлагает начать настройку проекта;
    - не читает всю `.business/`, `ai-clone/`, `mastery/`, `plans/` и `retrospectives/`.
 

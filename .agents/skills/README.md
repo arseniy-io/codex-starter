@@ -14,6 +14,19 @@ Skill нужен, когда один и тот же workflow повторяет
     └── assets/
 ```
 
+Минимальный `SKILL.md`:
+
+```markdown
+---
+name: "skill-name"
+description: "When to use this workflow."
+---
+
+# Skill Name
+
+Короткие инструкции, какие файлы читать, какие команды запускать и где границы workflow.
+```
+
 Перед установкой любого skill проведи аудит: `README.md`, `SKILL.md`, scripts, внешние URL, доступ к `.env`, операции удаления.
 
 Если workflow нужен во всех проектах - это кандидат на личный/global skill. Если нужно распространять набор skills, hooks, apps или MCP - это кандидат на plugin.

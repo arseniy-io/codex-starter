@@ -12,5 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Run starter lint
+        run: python3 scripts/starter-lint.py
+
       - name: Run security audit
         run: bash scripts/security-audit.sh

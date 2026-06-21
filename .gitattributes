@@ -1,3 +1,17 @@
+* text=auto
+
+*.md text eol=lf
+*.tmpl text eol=lf
+*.toml text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.py text eol=lf
+*.ps1 text eol=lf
 *.sh text eol=lf
 *.sample text eol=lf
-.codex/hooks/*.py text eol=lf
+*.example text eol=lf
+
+LICENSE text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf

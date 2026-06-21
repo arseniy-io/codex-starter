@@ -1,6 +1,6 @@
 # Flow: lite
 
-Читай этот файл только если в `AUTOPILOT.md` выбран `onboarding_depth: lite`.
+Читай этот файл только если в `.codex/autopilot-state.yml` выбран `autopilot.onboarding_depth: lite`.
 
 `lite` подходит для лендинга, личной страницы, портфолио, локальной услуги, маленького сайта или простого внутреннего инструмента.
 
@@ -22,6 +22,8 @@
 
 ## Файлы
 
+Цель `lite` - 3-5 коротких бизнес-файлов, а не большая библиотека контекста.
+
 По умолчанию создай только минимальный набор:
 
 - `.business/INDEX.md`;
@@ -36,4 +38,4 @@
 
 `lite` считается успешным, если новое окно Codex может понять проект через `AGENTS.md` -> `PROJECT_STATE.md` -> `.business/INDEX.md` -> 1-3 коротких файла.
 
-После создания файлов обнови progress: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: lite`, `last_completed_substep: lite_files_created`, затем вернись в `AUTOPILOT.md` к финалу шага 8.
+После создания файлов обнови state: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: lite`, `last_completed_substep: lite_files_created`, затем вернись в `AUTOPILOT.md` к финалу шага 8.

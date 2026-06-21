@@ -1,6 +1,6 @@
 # Общие правила шага 8
 
-Читай этот файл только на шаге 8 `AUTOPILOT.md`, после выбора `onboarding_depth`.
+Читай этот файл только на шаге 8 `AUTOPILOT.md`, после выбора `autopilot.onboarding_depth` в `.codex/autopilot-state.yml`.
 
 ## Правила интервью
 
@@ -52,5 +52,5 @@
 1. Сгенерируй или обнови `.business/INDEX.md`.
 2. Проверь, что новое окно Codex может понять проект через короткий маршрут.
 3. Если маршрут раздут, сначала сократи `.business/INDEX.md` и `PROJECT_STATE.md`.
-4. Обнови progress: `last_completed_step: 8`, `current_stage: final_files`, `current_flow: null`, `last_completed_substep: business_index_checked`.
+4. Обнови state: `last_completed_step: 8`, `current_stage: final_files`, `current_flow: null`, `last_completed_substep: business_index_checked`.
 5. Не называй AUTOPILOT завершённым после шага 8. После этого обязательно вернись в `AUTOPILOT.md` и выполни шаги 9-10.

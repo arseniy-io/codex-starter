@@ -2,12 +2,13 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "^Bash$",
         "hooks": [
           {
             "type": "command",
-            "command": "python .codex/hooks/pre_tool_use_policy.py",
-            "commandWindows": "python .codex\\hooks\\pre_tool_use_policy.py",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use_policy.py\"",
+            "commandWindows": "python -c \"import pathlib, subprocess, sys; root = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode('utf-8').strip(); script = pathlib.Path(root) / '.codex' / 'hooks' / 'pre_tool_use_policy.py'; sys.exit(subprocess.call([sys.executable, str(script)]))\"",
+            "statusMessage": "Checking command against project policy",
             "timeout": 5
           }
         ]

@@ -104,18 +104,28 @@ git status --short --branch
 
 ### Как проверить policy-hook
 
+Windows/PowerShell:
+
+```powershell
+'{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/pre_tool_use_policy.py
+'{"tool":"shell","input":{"command":"git status --short"}}' | python .codex/hooks/pre_tool_use_policy.py
+```
+
+macOS/Linux/Git Bash:
+
 ```bash
 echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/pre_tool_use_policy.py
 echo '{"tool":"shell","input":{"command":"git status --short"}}' | python .codex/hooks/pre_tool_use_policy.py
 ```
 
-Первый пример должен вернуть `decision: block`, второй - `decision: allow`.
+Первый пример должен вернуть `permissionDecision: deny`, второй - `permissionDecision: allow`.
 
 ### Security audit не запускается через `bash` на Windows
 
 Если `bash scripts/security-audit.sh` уходит в WSL и падает, запусти PowerShell-версию:
 
 ```powershell
+python scripts/starter-lint.py
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1
 ```
 

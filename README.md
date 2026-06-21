@@ -21,11 +21,12 @@
 - `mastery/` - авторские экспертные линзы и методы, которые Codex читает точечно под задачу.
 - `PROJECT_STATE.md` - короткий вход для нового окна Codex: текущий фокус, что читать сначала и что не трогать без причины.
 - `AGENTS.md` - долговременные правила для Codex в этом репозитории.
-- `.codex/` - project-level config и место для guardrails.
+- `.codex/` - project-level config, onboarding state и место для guardrails.
 - `.agents/skills/` - место для локальных repo-skills, если они нужны проекту.
 - `plans/` - планы реализации по задачам.
 - `retrospectives/` - короткая память между сессиями.
 - `prompts/` - готовые workflow-промпты под типовые задачи.
+- `maintainer/` - история разработки самого starter-template; не входит в обычный маршрут чтения проекта.
 - `STRUCTURE.md` - короткая карта всех папок и зачем они нужны.
 - `QUALITY_CHECKLIST.md` - критерии качества перед публикацией или крупной правкой.
 
@@ -65,7 +66,7 @@ codex-starter/
 ├── AUTOPILOT.md           ← сценарий первого запуска
 ├── POST_AUTOPILOT.md      ← второй этап настройки
 ├── TROUBLESHOOTING.md     ← решения типовых проблем
-├── .codex/                ← project config и guardrails
+├── .codex/                ← project config, onboarding state и guardrails
 ├── .agents/skills/        ← локальные repo-skills
 ├── ai-clone/              ← личный контекст автора решений
 ├── mastery/               ← методологии и экспертные подходы
@@ -75,6 +76,7 @@ codex-starter/
 ├── prompts/               ← библиотека промптов
 ├── templates/             ← шаблоны файлов
 ├── scripts/               ← проверки шаблона
+├── maintainer/            ← история обслуживания starter-template
 ├── STRUCTURE.md           ← карта папок
 └── QUALITY_CHECKLIST.md   ← критерии качества
 ```
@@ -84,7 +86,15 @@ codex-starter/
 - `.env` и `.env.local` уже добавлены в `.gitignore`.
 - `.business/` по умолчанию игнорируется: AUTOPILOT создаёт её локально, потому что там быстро появляются приватная стратегия, экономика, клиенты и рабочие решения. Пример структуры смотри в `examples/` и `templates/`.
 - `ai-clone/` и `mastery/` сначала tracked как плейсхолдеры. После заполнения `POST_AUTOPILOT.md` проводит privacy-gate: оставить в приватном repo, снять с tracking или оставить только безопасную короткую версию.
-- Pre-commit hook проверяет staged-файлы на секреты:
+- Pre-commit hook проверяет staged-файлы на секреты.
+
+Windows/PowerShell:
+
+```powershell
+Copy-Item .github/hooks/pre-commit.sample .git/hooks/pre-commit
+```
+
+macOS/Linux/Git Bash:
 
 ```bash
 cp .github/hooks/pre-commit.sample .git/hooks/pre-commit
@@ -99,7 +109,7 @@ chmod +x .git/hooks/pre-commit
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/user-project-safety-check.ps1
 ```
 
-или:
+На macOS/Linux или из Git Bash:
 
 ```bash
 bash scripts/user-project-safety-check.sh
@@ -108,16 +118,31 @@ bash scripts/user-project-safety-check.sh
 - Для публикации самого starter-template запускай полный publication audit:
 
 ```powershell
+python scripts/starter-lint.py
+```
+
+Он проверяет структуру starter: `.codex/autopilot-state.yml`, `.gitattributes`, отсутствие корневой `.business/`, markdown-ссылки, mojibake, hook smoke-test, `git diff --check` и старые agent-specific следы в рабочих инструкциях.
+
+```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1
 ```
 
 На macOS/Linux или из Git Bash:
 
 ```bash
+python3 scripts/starter-lint.py
 bash scripts/security-audit.sh
 ```
 
-Проверить hook-policy вручную:
+Проверить hook-policy вручную.
+
+Windows/PowerShell:
+
+```powershell
+'{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/pre_tool_use_policy.py
+```
+
+macOS/Linux/Git Bash:
 
 ```bash
 echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/pre_tool_use_policy.py
@@ -132,6 +157,8 @@ echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/p
 5. Для новой функции создаёт план в `plans/`.
 6. После реализации запускает проверки стека.
 7. В конце заметной сессии обновляет `PROJECT_STATE.md`, если изменился фокус или следующий шаг, и пишет ретро в `retrospectives/`.
+
+`maintainer/` нужен только для обслуживания самого starter-template. В обычном проекте Codex не читает старые планы, ретро и эксперименты из этой папки.
 
 ## Что шаблон не делает
 

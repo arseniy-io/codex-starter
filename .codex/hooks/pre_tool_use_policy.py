@@ -23,6 +23,28 @@ RULES = [
 ]
 
 
+def emit_allow() -> None:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "allow",
+        }
+    }))
+
+
+def emit_deny(label: str) -> None:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": (
+                f"Blocked by project policy: {label}. "
+                "Explain the risk and ask for explicit user direction."
+            ),
+        }
+    }))
+
+
 def iter_strings(value: Any):
     if isinstance(value, str):
         yield value
@@ -36,21 +58,19 @@ def iter_strings(value: Any):
 
 def main() -> int:
     try:
-        payload = json.load(sys.stdin)
+        raw_payload = sys.stdin.buffer.read().decode("utf-8-sig")
+        payload = json.loads(raw_payload)
     except json.JSONDecodeError:
-        print(json.dumps({"decision": "allow"}))
+        emit_allow()
         return 0
 
     haystack = "\n".join(iter_strings(payload))
     for label, pattern in RULES:
         if pattern.search(haystack):
-            print(json.dumps({
-                "decision": "block",
-                "reason": f"Blocked by project policy: {label}. Explain the risk and ask for explicit user direction.",
-            }))
+            emit_deny(label)
             return 2
 
-    print(json.dumps({"decision": "allow"}))
+    emit_allow()
     return 0
 
 

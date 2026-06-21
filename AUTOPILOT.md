@@ -1,12 +1,3 @@
----
-completed: false
-current_stage: start
-current_flow: null
-last_completed_step: 0
-last_completed_substep: null
-started_at: null
----
-
 # AUTOPILOT - онбординг Codex Starter
 
 > Это файл для Codex. Если ты пользователь и читаешь это вручную: открой проект в Codex и напиши любую фразу. Codex сам продолжит с нужного шага.
@@ -17,7 +8,7 @@ started_at: null
 
 **Главный результат:** `AGENTS.md`, `PROJECT_STATE.md`, `.business/INDEX.md` и короткий набор рабочих контекстных файлов.
 
-**Когда запускать:** только если `completed: false` и пользователь готов настраивать проект.
+**Когда запускать:** только если `autopilot.completed: false` в `.codex/autopilot-state.yml` и пользователь готов настраивать проект.
 
 **Когда не запускать:** если пользователь просит аудит, оценку, список улучшений или обслуживает сам starter-template.
 
@@ -25,33 +16,40 @@ started_at: null
 
 **Критерий успеха:** после онбординга новое окно Codex понимает проект через `AGENTS.md` -> `PROJECT_STATE.md` -> индекс нужной зоны -> 1-3 релевантных файла.
 
+## State-файл
+
+Изменяемое состояние онбординга хранится в `.codex/autopilot-state.yml`, секция `autopilot`.
+
+`AUTOPILOT.md` - стабильный сценарий. Не записывай state, ответы пользователя и статус прохождения в заголовок этого файла.
+
 ## Правила для Codex
 
-1. Иди по шагам 1-10 и обновляй progress-поля после каждого шага.
-2. Если сессия прервалась, прочитай `current_stage`, `current_flow`, `last_completed_step` и `last_completed_substep`, затем продолжи с ближайшего незавершённого действия.
-3. Не включай рискованные режимы без подтверждений пользователя.
-4. Перед shell-командами объясняй, зачем они нужны.
-5. Говори коротко: пользователь учится, ему нужна ясность, а не лекция.
-6. Не коммить `.business/` после заполнения реальными данными.
-7. Если AUTOPILOT проходит в тестовой копии, все изменения, планы, ретро и отчёты пиши только внутри этой копии. Не меняй основной starter.
-8. Все Markdown-файлы сохраняй в UTF-8, чтобы отчёты читались без mojibake/вопросиков.
-9. Не говори, что AUTOPILOT завершён, пока frontmatter не обновлён до `completed: true`, `current_stage: done`, `last_completed_step: 10`.
+1. Перед стартом открой `.codex/autopilot-state.yml` и прочитай секцию `autopilot`.
+2. Иди по шагам 1-10 и обновляй state-файл после каждого шага.
+3. Если сессия прервалась, прочитай `autopilot.current_stage`, `autopilot.current_flow`, `autopilot.last_completed_step` и `autopilot.last_completed_substep`, затем продолжи с ближайшего незавершённого действия.
+4. Не включай рискованные режимы без подтверждений пользователя.
+5. Перед shell-командами объясняй, зачем они нужны.
+6. Говори коротко: пользователь учится, ему нужна ясность, а не лекция.
+7. Не коммить `.business/` после заполнения реальными данными.
+8. Если AUTOPILOT проходит в тестовой копии, все изменения, планы, ретро и отчёты пиши только внутри этой копии. Не меняй основной starter.
+9. Все Markdown-файлы сохраняй в UTF-8, чтобы отчёты читались без mojibake/вопросиков.
+10. Не говори, что AUTOPILOT завершён, пока `.codex/autopilot-state.yml` не показывает `autopilot.completed: true`, `autopilot.current_stage: done`, `autopilot.last_completed_step: 10`.
 
-## Progress-поля
+## State-поля
 
 - `current_stage` - где продолжать: `start`, `project_type`, `stack`, `codex_surfaces`, `security`, `git`, `business_pause`, `business_context`, `final_files`, `final_commit`, `done`.
 - `current_flow` - выбранный flow шага 8: `lite`, `standard`, `deep` или `null`.
 - `last_completed_step` - последний завершённый номер шага: `0-10`. Для подшагов шага 8 не смешивай номер с текстом.
 - `last_completed_substep` - короткий подшаг, например `depth_selected`, `lite_files_created`, `standard_files_created`, `deep_products`, `business_index_checked`.
 
-Если `current_stage: business_context`, сначала открой `autopilot/flows/common.md`, затем только файл из `current_flow`.
+Если `autopilot.current_stage: business_context`, сначала открой `autopilot/flows/common.md`, затем только файл из `autopilot.current_flow`.
 
 ## Режимы работы
 
-- **Онбординг:** если `completed: false` и пользователь готов настраивать проект, выполняй шаги 1-10 и меняй файлы.
+- **Онбординг:** если `autopilot.completed: false` и пользователь готов настраивать проект, выполняй шаги 1-10 и меняй файлы.
 - **Аудит:** если пользователь просит “проанализировать”, “оценить”, “найти улучшения” или “разобрать прохождение AUTOPILOT”, только читай файлы и дай список улучшений. Не редактируй и не коммить.
 - **Правка шаблона:** меняй `AUTOPILOT.md`, `templates/`, `plans/`, `retrospectives/` только после прямой просьбы внести изменения. Делай это отдельной веткой и отдельным коммитом.
-- **Завершённый AUTOPILOT:** если `completed: true`, не продолжай шаги заново, пока пользователь явно не попросит повторный онбординг.
+- **Завершённый AUTOPILOT:** если `autopilot.completed: true`, не продолжай шаги заново, пока пользователь явно не попросит повторный онбординг.
 
 ---
 
@@ -61,11 +59,11 @@ started_at: null
 
 > «Привет. Я проведу тебя через настройку проекта под Codex: контекст, правила, планы, ретро и безопасность. Мы выберем масштаб настройки позже: `lite`, `standard` или `deep`. Что за проект ты делаешь одним предложением?»
 
-Затем спроси ОС: Windows / macOS / Linux. Запиши в frontmatter `os: windows|macos|linux`.
+Затем спроси ОС: Windows / macOS / Linux. Запиши в `.codex/autopilot-state.yml`: `autopilot.os: windows|macos|linux`.
 
 Проверь `.vscode/settings.json`: `.business/` должна быть видна в сайдбаре.
 
-Обнови progress: `last_completed_step: 1`, `current_stage: project_type`, `last_completed_substep: null`.
+Обнови state: `last_completed_step: 1`, `current_stage: project_type`, `last_completed_substep: null`.
 
 ## Шаг 2. Тип проекта
 
@@ -73,17 +71,17 @@ started_at: null
 
 > «Какой тип проекта: коммерческий, некоммерческий, open-source, внутренний инструмент или учебный?»
 
-Запиши `project_type` во frontmatter.
+Запиши `autopilot.project_type` в `.codex/autopilot-state.yml`.
 
-Обнови progress: `last_completed_step: 2`, `current_stage: stack`, `last_completed_substep: null`.
+Обнови state: `last_completed_step: 2`, `current_stage: stack`, `last_completed_substep: null`.
 
 ## Шаг 3. Стек
 
 Спроси стек: Next.js/React, Vue/Nuxt, Svelte, Python, Node backend, mobile, low-code, другое, пока не знаю.
 
-Запиши `stack` во frontmatter.
+Запиши `autopilot.stack` в `.codex/autopilot-state.yml`.
 
-Обнови progress: `last_completed_step: 3`, `current_stage: codex_surfaces`, `last_completed_substep: null`.
+Обнови state: `last_completed_step: 3`, `current_stage: codex_surfaces`, `last_completed_substep: null`.
 
 ## Шаг 4. Codex-поверхности
 
@@ -97,7 +95,7 @@ started_at: null
 
 Покажи, что эти папки/файлы существуют или создай отсутствующие пустые папки.
 
-Обнови progress: `last_completed_step: 4`, `current_stage: security`, `last_completed_substep: null`.
+Обнови state: `last_completed_step: 4`, `current_stage: security`, `last_completed_substep: null`.
 
 ## Шаг 5. Безопасность
 
@@ -107,6 +105,7 @@ started_at: null
 2. User project safety check проходит:
    - Windows/PowerShell: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/user-project-safety-check.ps1`;
    - macOS/Linux/Git Bash: `bash scripts/user-project-safety-check.sh`.
+   Если `autopilot.os: windows`, сначала используй PowerShell-вариант. Bash-вариант запускай только если пользователь явно работает из Git Bash или macOS/Linux.
 3. `.codex/hooks.json` подключает `PreToolUse` hook для shell-команд.
 4. `.codex/hooks/pre_tool_use_policy.py` блокирует опасный пример:
 
@@ -124,7 +123,7 @@ echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/p
 
 Объясни пользователю: `user-project-safety-check` проверяет только общие риски проекта. `scripts/security-audit.*` нужен для публикации самого starter-template и содержит дополнительные проверки автора/бренда. Hook-policy не заменяет осторожность, но ловит очевидно опасные команды. В новом окружении Codex может попросить trust-review для project-local hooks.
 
-Обнови progress: `last_completed_step: 5`, `current_stage: git`, `last_completed_substep: null`.
+Обнови state: `last_completed_step: 5`, `current_stage: git`, `last_completed_substep: null`.
 
 ## Шаг 6. Git
 
@@ -137,11 +136,11 @@ git config user.email
 git status --short --branch
 ```
 
-Если папка не является git-репозиторием, не запускай `git init` автоматически. Скажи: «Git здесь не инициализирован, поэтому шаги stage/commit пропущу. Онбординг можно продолжить, но финальный commit будет недоступен в этой копии». Обнови progress как обычно и запиши `last_completed_substep: git_unavailable`.
+Если папка не является git-репозиторием, не запускай `git init` автоматически. Скажи: «Git здесь не инициализирован, поэтому шаги stage/commit пропущу. Онбординг можно продолжить, но финальный commit будет недоступен в этой копии». Обнови state как обычно и запиши `last_completed_substep: git_unavailable`.
 
 Если git доступен и имя/email пустые, спроси пользователя и настрой локально для проекта.
 
-Обнови progress: `last_completed_step: 6`, `current_stage: business_pause`, `last_completed_substep: git_checked|git_unavailable`.
+Обнови state: `last_completed_step: 6`, `current_stage: business_pause`, `last_completed_substep: git_checked|git_unavailable`.
 
 ## Шаг 7. Пауза перед бизнес-интервью
 
@@ -149,9 +148,9 @@ git status --short --branch
 
 > «Техническая часть готова. Дальше заполним `.business/` - это контекст, который будет экономить токены и улучшать решения. Продолжаем сейчас или сделаем паузу?»
 
-Если пользователь выбирает паузу, остановись после обновления progress: `last_completed_step: 7`, `current_stage: business_pause`, `last_completed_substep: paused_before_business`.
+Если пользователь выбирает паузу, остановись после обновления state: `last_completed_step: 7`, `current_stage: business_pause`, `last_completed_substep: paused_before_business`.
 
-Если пользователь продолжает, обнови progress: `last_completed_step: 7`, `current_stage: business_context`, `last_completed_substep: business_started`, затем переходи к шагу 8 и выбери единую глубину онбординга: `lite`, `standard` или `deep`.
+Если пользователь продолжает, обнови state: `last_completed_step: 7`, `current_stage: business_context`, `last_completed_substep: business_started`, затем переходи к шагу 8 и выбери единую глубину онбординга: `lite`, `standard` или `deep`.
 
 Если пользователь хочет быстрый старт, рекомендуй `lite`: минимальный `.business/INDEX.md`, 3-5 коротких `.business`-файлов, `PROJECT_STATE.md` и ближайший следующий шаг. Если видишь сильный deep-триггер, предупреди об этом и предложи `standard` или `deep`.
 
@@ -177,13 +176,14 @@ git status --short --branch
 
 > «Моя рекомендация: `[lite/standard/deep]`, потому что [1-2 причины]. Выбираем так или хочешь другой режим?»
 
-Запиши выбор во frontmatter:
+Запиши выбор в `.codex/autopilot-state.yml`:
 
 ```yaml
-onboarding_depth: lite|standard|deep
+autopilot:
+  onboarding_depth: lite|standard|deep
 ```
 
-Обнови progress: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: lite|standard|deep`, `last_completed_substep: depth_selected`.
+Обнови state: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: lite|standard|deep`, `last_completed_substep: depth_selected`.
 
 Дальше читай только нужные инструкции:
 
@@ -255,7 +255,7 @@ onboarding_depth: lite|standard|deep
 
 Почему: учебные файлы полезны для демонстрации, но в реальном проекте они быстро превращаются в шум. В `plans/` и `retrospectives/` должны попадать реальные задачи и заметные сессии.
 
-Обнови progress: `last_completed_step: 9`, `current_stage: final_commit`, `current_flow: null`, `last_completed_substep: final_files_created`.
+Обнови state: `last_completed_step: 9`, `current_stage: final_commit`, `current_flow: null`, `last_completed_substep: final_files_created`.
 
 Перед переходом к шагу 10 проверь, что `AGENTS.md` и `PROJECT_STATE.md` уже записаны после preview/подтверждения, а стартовый маршрут укладывается в лимит выбранного flow. Если нет - не переходи к финалу, сначала исправь маршрут.
 
@@ -267,7 +267,7 @@ onboarding_depth: lite|standard|deep
 git rev-parse --is-inside-work-tree
 ```
 
-Если git недоступен, это не блокирует завершение AUTOPILOT в тестовой копии или локальной папке без repo. Скажи, что stage/commit пропущены из-за отсутствия `.git`, и переходи к финальному обновлению frontmatter.
+Если git недоступен, это не блокирует завершение AUTOPILOT в тестовой копии или локальной папке без repo. Скажи, что stage/commit пропущены из-за отсутствия `.git`, и переходи к финальному обновлению state-файла.
 
 Если git доступен, перед коммитом:
 
@@ -322,17 +322,18 @@ git commit -m "chore: initial setup via codex-starter"
 - `prompts/methodology/plan-critique.md`
 - `prompts/methodology/10-reasons.md`
 
-Обнови frontmatter:
+Обнови `.codex/autopilot-state.yml`:
 
 ```yaml
-completed: true
-current_stage: done
-current_flow: null
-last_completed_step: 10
-last_completed_substep: onboarding_complete
+autopilot:
+  completed: true
+  current_stage: done
+  current_flow: null
+  last_completed_step: 10
+  last_completed_substep: onboarding_complete
 ```
 
-После обновления frontmatter перечитай первые строки `AUTOPILOT.md` и убедись, что там действительно `completed: true`, `current_stage: done`, `last_completed_step: 10`. Только после этого говори, что онбординг завершён.
+После обновления state-файла перечитай `.codex/autopilot-state.yml` и убедись, что там действительно `autopilot.completed: true`, `autopilot.current_stage: done`, `autopilot.last_completed_step: 10`. Только после этого говори, что онбординг завершён.
 
 Скажи:
 

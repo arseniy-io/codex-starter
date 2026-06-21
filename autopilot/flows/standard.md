@@ -1,6 +1,6 @@
 # Flow: standard
 
-Читай этот файл только если в `AUTOPILOT.md` выбран `onboarding_depth: standard`.
+Читай этот файл только если в `.codex/autopilot-state.yml` выбран `autopilot.onboarding_depth: standard`.
 
 `standard` подходит для обычного продукта или коммерческого сайта средней сложности. Цель - 6-10 рабочих файлов, а не вся `.business/`.
 
@@ -64,4 +64,4 @@
 
 `standard` считается успешным, если новое окно Codex может понять проект через `AGENTS.md` -> `PROJECT_STATE.md` -> `.business/INDEX.md` -> 2-4 нужных файла.
 
-После создания файлов обнови progress: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: standard`, `last_completed_substep: standard_files_created`, затем вернись в `AUTOPILOT.md` к финалу шага 8.
+После создания файлов обнови state: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: standard`, `last_completed_substep: standard_files_created`, затем вернись в `AUTOPILOT.md` к финалу шага 8.

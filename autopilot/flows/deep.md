@@ -1,6 +1,6 @@
 # Flow: deep
 
-Читай этот файл только если в `AUTOPILOT.md` выбран `onboarding_depth: deep`.
+Читай этот файл только если в `.codex/autopilot-state.yml` выбран `autopilot.onboarding_depth: deep`.
 
 `deep` не равен большой библиотеке. Это короткая карта рисков, данных, ролей, интеграций и MVP.
 
@@ -59,4 +59,4 @@
 
 `deep` считается успешным, если новый Codex видит короткую карту входа по scope, данным, ролям, интеграциям, trust/security и MVP. Стартовый маршрут должен укладываться в 5-6 файлов всего, включая `AGENTS.md`, `PROJECT_STATE.md` и `.business/INDEX.md`.
 
-После каждого блока записывай файлы и обновляй progress: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: deep`, `last_completed_substep: deep_<block>`. После создания всех нужных файлов вернись в `AUTOPILOT.md` к финалу шага 8.
+После каждого блока записывай файлы и обновляй state: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: deep`, `last_completed_substep: deep_<block>`. После создания всех нужных файлов вернись в `AUTOPILOT.md` к финалу шага 8.
