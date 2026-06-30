@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Structural lint for Codex Starter.
 
-This script checks the starter-template shape, not a user project's app code.
+By default this script checks the pristine starter-template shape, not a user
+project's app code. Use ``--onboarded`` for a copy after AUTOPILOT has finished.
 It intentionally has no third-party dependencies.
 """
 
@@ -12,6 +13,7 @@ import os
 import re
 import subprocess
 import sys
+from argparse import ArgumentParser
 from pathlib import Path
 
 
@@ -129,6 +131,100 @@ def check_business_clean() -> None:
         fail("root business not tracked", "\n  ".join(tracked))
     else:
         ok("root business not tracked")
+
+
+def check_onboarded_autopilot_state() -> None:
+    state_path = ROOT / ".codex" / "autopilot-state.yml"
+    if not state_path.exists():
+        fail("onboarded autopilot state exists", rel(state_path))
+        return
+
+    state = read_text(state_path)
+    required = [
+        "autopilot:",
+        "  completed: true",
+        "  current_stage: done",
+        "  current_flow: null",
+        "  last_completed_step: 10",
+        "post_autopilot:",
+    ]
+    missing = [item for item in required if item not in state]
+    if missing:
+        fail("onboarded autopilot state", ", ".join(missing))
+    else:
+        ok("onboarded autopilot state")
+
+    if "  onboarding_depth: lite" in state:
+        ok("onboarded flow recorded (lite)")
+    elif "  onboarding_depth: standard" in state:
+        ok("onboarded flow recorded (standard)")
+    elif "  onboarding_depth: deep" in state:
+        ok("onboarded flow recorded (deep)")
+    else:
+        fail("onboarded flow recorded", "onboarding_depth should be lite, standard or deep")
+
+
+def check_onboarded_business() -> None:
+    business_dir = ROOT / "business"
+    if not business_dir.exists():
+        fail("onboarded business exists", rel(business_dir))
+        return
+    ok("onboarded business exists")
+
+    required_files = [
+        "business/INDEX.md",
+        "business/life-metrics.md",
+        "business/raw/README.md",
+    ]
+    missing = [path for path in required_files if not (ROOT / path).exists()]
+    if missing:
+        fail("onboarded business core files", ", ".join(missing))
+    else:
+        ok("onboarded business core files")
+
+    git = run(["git", "ls-files", "business/*"])
+    tracked = [line for line in git.stdout.splitlines() if line.strip()]
+    if tracked:
+        fail("onboarded business not tracked", "\n  ".join(tracked))
+    else:
+        ok("onboarded business not tracked")
+
+    if (ROOT / "business" / "INDEX.md").exists():
+        index = read_text(ROOT / "business" / "INDEX.md")
+        required_snippets = ["business/life-metrics.md", "1-3"]
+        missing_snippets = [snippet for snippet in required_snippets if snippet not in index]
+        if missing_snippets:
+            fail("onboarded business index routes context", ", ".join(missing_snippets))
+        else:
+            ok("onboarded business index routes context")
+
+
+def check_onboarded_context_route() -> None:
+    required_files = [
+        "AGENTS.md",
+        "PROJECT_STATE.md",
+        "ai-clone/INDEX.md",
+    ]
+    missing = [path for path in required_files if not (ROOT / path).exists()]
+    if missing:
+        fail("onboarded context entry files", ", ".join(missing))
+        return
+    ok("onboarded context entry files")
+
+    agents = read_text(ROOT / "AGENTS.md")
+    project_state = read_text(ROOT / "PROJECT_STATE.md")
+    checks = [
+        ("AGENTS routes PROJECT_STATE", agents, "PROJECT_STATE.md"),
+        ("AGENTS routes business index", agents, "business/INDEX.md"),
+        ("AGENTS routes live metrics", agents, "business/life-metrics.md"),
+        ("PROJECT_STATE routes business index", project_state, "business/INDEX.md"),
+        ("PROJECT_STATE avoids full context by default", project_state, "весь `business/`"),
+    ]
+    missing_routes = [label for label, text, snippet in checks if snippet not in text]
+    if missing_routes:
+        fail("onboarded context route", ", ".join(missing_routes))
+    else:
+        ok("onboarded context route")
 
 
 def check_no_legacy_business_traces(files: list[Path]) -> None:
@@ -461,12 +557,42 @@ def check_old_agent_traces(files: list[Path]) -> None:
         ok("no old agent traces in working instructions")
 
 
+def parse_args() -> tuple[bool, Path]:
+    parser = ArgumentParser(description="Lint a Codex Starter template or onboarded copy.")
+    parser.add_argument(
+        "--onboarded",
+        action="store_true",
+        help="check a copy after AUTOPILOT completed instead of a pristine starter-template",
+    )
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=ROOT,
+        help="repository root to check; defaults to the parent of this script",
+    )
+    args = parser.parse_args()
+    return args.onboarded, args.root.resolve()
+
+
 def main() -> int:
+    global ROOT
+
+    onboarded, root = parse_args()
+    ROOT = root
+    mode = "onboarded project" if onboarded else "starter-template"
+
     print("Codex Starter lint")
     print("===================")
+    print(f"Mode: {mode}")
+    print(f"Root: {ROOT}")
     files = iter_files()
-    check_autopilot_state()
-    check_business_clean()
+    if onboarded:
+        check_onboarded_autopilot_state()
+        check_onboarded_business()
+        check_onboarded_context_route()
+    else:
+        check_autopilot_state()
+        check_business_clean()
     check_no_legacy_business_traces(files)
     check_instruction_alignment()
     check_gitattributes_policy()
@@ -481,7 +607,7 @@ def main() -> int:
     if failures:
         print(f"RESULT: {len(failures)} problem(s) found.")
         return 1
-    print("RESULT: starter lint passed.")
+    print(f"RESULT: {mode} lint passed.")
     return 0
 
 

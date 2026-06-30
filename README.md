@@ -115,13 +115,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/user-project-safety-
 bash scripts/user-project-safety-check.sh
 ```
 
+- Для проверки копии, где AUTOPILOT уже пройден и `business/` создан, запускай onboarded-lint:
+
+```powershell
+python scripts/starter-lint.py --onboarded
+```
+
+Он проверяет результат онбординга: `.codex/autopilot-state.yml` завершён, `business/INDEX.md`, `business/life-metrics.md` и `business/raw/README.md` есть, `business/` не tracked, а `AGENTS.md` и `PROJECT_STATE.md` ведут Codex по короткому маршруту чтения.
+
 - Для публикации самого starter-template запускай полный publication audit:
 
 ```powershell
 python scripts/starter-lint.py
 ```
 
-Он проверяет структуру starter: `.codex/autopilot-state.yml`, `.gitattributes`, отсутствие корневой `business/`, markdown-ссылки, mojibake, hook smoke-test, `git diff --check` и старые agent-specific следы в рабочих инструкциях.
+Он проверяет структуру чистого starter-template: `.codex/autopilot-state.yml`, `.gitattributes`, отсутствие корневой `business/`, markdown-ссылки, mojibake, hook smoke-test, `git diff --check` и старые agent-specific следы в рабочих инструкциях. Если AUTOPILOT уже пройден, используй `python scripts/starter-lint.py --onboarded`, потому что заполненная копия больше не должна выглядеть как pristine-шаблон.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1

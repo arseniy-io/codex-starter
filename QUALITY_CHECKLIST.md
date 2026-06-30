@@ -74,6 +74,7 @@
 - [ ] Pre-commit hook блокирует секреты и случайный коммит `business/`.
 - [ ] User project safety check проходит: `scripts/user-project-safety-check.ps1` на Windows или `scripts/user-project-safety-check.sh` в bash/Git Bash.
 - [ ] Starter lint проходит: `python scripts/starter-lint.py`.
+- [ ] Для уже пройденного AUTOPILOT проходит onboarded lint: `python scripts/starter-lint.py --onboarded`.
 - [ ] `.gitattributes` фиксирует LF для Markdown, YAML, JSON, Python, PowerShell и shell-скриптов.
 - [ ] Перед публикацией starter проходит publication audit: `scripts/security-audit.ps1` или `scripts/security-audit.sh`.
 - [ ] `.codex/hooks.json` подключает `PreToolUse` hook для shell-команд.
@@ -97,5 +98,6 @@
 - [ ] Проверить, что после AUTOPILOT `POST_AUTOPILOT.md` предлагается как опциональный второй этап, а не обязательное продолжение.
 - [ ] Проверить, что `plan → implement → verify → retro` объясняется без обязательного `hello-test` в корне проекта.
 - [ ] В новом окне Codex может назвать текущий фокус и следующий шаг, не читая всю `business/`.
+- [ ] После живого AUTOPILOT `python scripts/starter-lint.py --onboarded` проходит, а обычный `python scripts/starter-lint.py` остаётся проверкой чистого template.
 - [ ] Для публикации starter пройти `autopilot/NEW_WINDOW_TEST.md` и записать один главный следующий пункт улучшения.
 - [ ] Для публикации starter пройти `python scripts/starter-lint.py` перед `security-audit`.
