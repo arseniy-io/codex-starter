@@ -15,7 +15,7 @@ body:
     id: question
     attributes:
       label: Вопрос
-      placeholder: Не понимаю разницу между .business/ и plans/...
+      placeholder: Не понимаю разницу между business/ и plans/...
     validations:
       required: true
 

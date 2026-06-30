@@ -9,12 +9,12 @@ Codex не должен читать всю папку целиком. Для к
 ## Карта
 
 - `role.md` - кто владелец проекта и какая у него роль.
-- `identity/README.md` - ценности, амбиции, профессиональная рамка.
-- `voice/README.md` - тон, словарь, спорные формулировки, стиль общения.
-- `thinking/README.md` - ментальные модели и способ принятия решений.
-- `principles/README.md` - правила продукта, кода, бизнеса и безопасности.
+- `identity/values.md`, `identity/vision.md`, `identity/mission.md`, `identity/biography.md` - ценности, видение, миссия и бэкграунд.
+- `voice/tone.md`, `voice/vocabulary.md`, `voice/stop-words.md` - тон, словарь и нежелательные формулировки.
+- `thinking/mental-models.md` - ментальные модели и способ принятия решений.
+- `principles/product.md`, `principles/code.md`, `principles/business.md` - правила продукта, кода и бизнеса.
 - `feedback/README.md` - правила, выученные после ошибок.
-- `style/README.md` - предпочтения по интерфейсам, текстам и структуре.
+- `style/telegram-format.md`, `style/general.md` - предпочтения по Telegram, интерфейсам, текстам и структуре.
 - `reference/README.md` - инструменты, инфраструктура и ссылки без секретов.
 
 ## Как обновлять

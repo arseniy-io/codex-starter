@@ -25,7 +25,7 @@
    - Codex читает `AGENTS.md`;
    - видит `AUTOPILOT.md` и `.codex/autopilot-state.yml` с `autopilot.completed: false`;
    - предлагает начать настройку проекта;
-   - не читает всю `.business/`, `ai-clone/`, `mastery/`, `plans/` и `retrospectives/`.
+   - не читает всю `business/`, `ai-clone/`, `mastery/`, `plans/` и `retrospectives/`.
 
 ## Тест 2. Аудит без правок
 
@@ -44,7 +44,8 @@
    - Codex рекомендует `lite`;
    - читает `autopilot/flows/common.md` и `autopilot/flows/lite.md`;
    - не читает `standard.md` и `deep.md` без причины;
-   - создаёт минимальный набор `.business/`.
+   - создаёт минимальный набор `business/`;
+   - создаёт `business/life-metrics.md` и `business/raw/README.md`, но не добавляет `raw/` в стартовое чтение.
 
 Повтори с продуктом средней сложности и сложным SaaS/marketplace/AI-проектом:
 
@@ -57,7 +58,9 @@
 
 `AGENTS.md` -> `PROJECT_STATE.md` -> индекс нужной зоны -> 1-3 релевантных файла.
 
-Если Codex говорит, что ему нужно читать всю `.business/`, весь `ai-clone/`, весь `mastery/`, все планы или все ретро, starter не прошёл тест.
+Если задача про выручку, цены, клиентов, конверсии, даты или другие живые цифры, маршрут должен добавить `business/life-metrics.md` перед ответом по фактам.
+
+Если Codex говорит, что ему нужно читать всю `business/`, весь `ai-clone/`, весь `mastery/`, все планы или все ретро, starter не прошёл тест.
 
 ## Тест 5. Безопасные действия
 

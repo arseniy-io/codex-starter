@@ -3,16 +3,16 @@
     "**/.git": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    "**/.business": false,
     "**/.vscode": false,
     "**/.codex": false,
-    "**/.agents": false
+    "**/.agents": false,
+    "**/business": false
   },
   "search.exclude": {
     "**/node_modules": true,
     "**/.next": true,
     "**/dist": true,
     "**/build": true,
-    "**/.business": false
+    "**/business": false
   }
 }

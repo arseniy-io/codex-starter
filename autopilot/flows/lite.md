@@ -22,20 +22,22 @@
 
 ## Файлы
 
-Цель `lite` - 3-5 коротких бизнес-файлов, а не большая библиотека контекста.
+Цель `lite` - 3-5 коротких бизнес-файлов плюс `business/life-metrics.md` и пустой `business/raw/`, а не большая библиотека контекста.
 
 По умолчанию создай только минимальный набор:
 
-- `.business/INDEX.md`;
-- `.business/company/about.md`;
-- `.business/products/overview.md`;
-- `.business/audience/avatar.md`;
-- один файл на выбор по реальной задаче: `.business/marketing/funnel.md`, `.business/marketing/channels.md`, `.business/products/pricing.md` или `.business/assets/brand-guidelines.md`.
+- `business/INDEX.md`;
+- `business/life-metrics.md`;
+- `business/raw/README.md`;
+- `business/company/about.md`;
+- `business/products/overview.md`;
+- `business/audience/avatar.md`;
+- один файл на выбор по реальной задаче: `business/marketing/funnel.md`, `business/marketing/channels.md`, `business/products/pricing.md` или `business/assets/brand-guidelines.md`.
 
-Не создавай `goals/`, `economics/`, `execution/`, `ai-clone/`, `mastery/`, роли, security, интеграции, roadmap и большую контентную библиотеку, если пользователь прямо не попросил или если без этого нельзя принять ближайшее решение.
+Не создавай `goals/`, `economics/`, `execution/`, роли, security, интеграции, roadmap и большую контентную библиотеку, если пользователь прямо не попросил или если без этого нельзя принять ближайшее решение. `ai-clone/` и `mastery/` оставь как базовые placeholder-слои starter, но не заполняй их глубоко в `lite` без прямой задачи про стиль, голос, предпочтения или методологию.
 
 ## Успех
 
-`lite` считается успешным, если новое окно Codex может понять проект через `AGENTS.md` -> `PROJECT_STATE.md` -> `.business/INDEX.md` -> 1-3 коротких файла.
+`lite` считается успешным, если новое окно Codex может понять проект через `AGENTS.md` -> `PROJECT_STATE.md` -> `business/INDEX.md` -> 1-3 коротких файла. Если задача про цифры, добавляется `business/life-metrics.md`.
 
 После создания файлов обнови state: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: lite`, `last_completed_substep: lite_files_created`, затем вернись в `AUTOPILOT.md` к финалу шага 8.

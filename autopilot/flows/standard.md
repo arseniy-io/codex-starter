@@ -2,7 +2,7 @@
 
 Читай этот файл только если в `.codex/autopilot-state.yml` выбран `autopilot.onboarding_depth: standard`.
 
-`standard` подходит для обычного продукта или коммерческого сайта средней сложности. Цель - 6-10 рабочих файлов, а не вся `.business/`.
+`standard` подходит для обычного продукта или коммерческого сайта средней сложности. Цель - 6-10 рабочих файлов плюс `business/life-metrics.md` и пустой `business/raw/`, а не вся `business/`.
 
 ## Проверка deep-триггеров
 
@@ -18,7 +18,7 @@
 
 Если есть сильный deep-триггер, предложи перейти на `deep`.
 
-Если триггер слабый, не создавай отдельные deep-файлы. Запиши короткую секцию `Осторожно позже` в `.business/INDEX.md` или `PROJECT_STATE.md`.
+Если триггер слабый, не создавай отдельные deep-файлы. Запиши короткую секцию `Осторожно позже` в `business/INDEX.md` или `PROJECT_STATE.md`.
 
 Слабые триггеры:
 
@@ -32,29 +32,31 @@
 
 Обязательный набор:
 
-1. `.business/INDEX.md` - карта проекта и минимальный список чтения.
-2. `.business/company/about.md` - что за проект и кто за ним стоит.
-3. `.business/products/overview.md` - что строим, основной scope и MVP.
-4. `.business/audience/avatar.md` - кто пользователь и какая боль.
-5. `.business/marketing/funnel.md` - путь от интереса до заявки/покупки.
+1. `business/INDEX.md` - карта проекта и минимальный список чтения.
+2. `business/life-metrics.md` - где брать свежие цифры по маркеру `LIVE`.
+3. `business/raw/README.md` - куда складывать исходники, не добавляя их в обязательное чтение.
+4. `business/company/about.md` - что за проект и кто за ним стоит.
+5. `business/products/overview.md` - что строим, основной scope и MVP.
+6. `business/audience/avatar.md` - кто пользователь и какая боль.
+7. `business/marketing/funnel.md` - путь от интереса до заявки/покупки.
 
 Добавь 1-5 файлов только по реальной необходимости:
 
-- `.business/products/pricing.md` - если есть цены, тарифы, пакеты или условия доступа;
-- `.business/audience/objections.md` - если важны доверие, страхи, сравнение и возражения;
-- `.business/audience/journey.md` - если путь пользователя сложнее одного действия;
-- `.business/marketing/channels.md` - если уже понятны каналы привлечения;
-- `.business/assets/brand-guidelines.md` - если важен визуальный стиль или тон;
-- `.business/goals/kpi.md` - если есть конкретные метрики;
-- `.business/economics/costs.md` или `.business/economics/revenue.md` - если экономика влияет на ближайшие решения.
+- `business/products/pricing.md` - если есть цены, тарифы, пакеты или условия доступа;
+- `business/audience/objections.md` - если важны доверие, страхи, сравнение и возражения;
+- `business/audience/journey.md` - если путь пользователя сложнее одного действия;
+- `business/marketing/channels.md` - если уже понятны каналы привлечения;
+- `business/assets/brand-guidelines.md` - если важен визуальный стиль или тон;
+- `business/goals/kpi.md` - если есть конкретные метрики;
+- `business/economics/costs.md` или `business/economics/revenue.md` - если экономика влияет на ближайшие решения.
 
 В `standard` не создавай без сильного deep-триггера:
 
-- `.business/products/roles-and-permissions.md`;
-- `.business/products/security-model.md`;
-- `.business/products/integrations.md`;
-- `.business/products/roadmap.md`;
-- `.business/execution/`;
+- `business/products/roles-and-permissions.md`;
+- `business/products/security-model.md`;
+- `business/products/integrations.md`;
+- `business/products/roadmap.md`;
+- `business/execution/`;
 - полный набор `goals/`;
 - полный набор `economics/`.
 
@@ -62,6 +64,6 @@
 
 ## Успех
 
-`standard` считается успешным, если новое окно Codex может понять проект через `AGENTS.md` -> `PROJECT_STATE.md` -> `.business/INDEX.md` -> 2-4 нужных файла.
+`standard` считается успешным, если новое окно Codex может понять проект через `AGENTS.md` -> `PROJECT_STATE.md` -> `business/INDEX.md` -> 2-4 нужных файла. Если задача про цифры, добавляется `business/life-metrics.md`.
 
 После создания файлов обнови state: `last_completed_step: 8`, `current_stage: business_context`, `current_flow: standard`, `last_completed_substep: standard_files_created`, затем вернись в `AUTOPILOT.md` к финалу шага 8.

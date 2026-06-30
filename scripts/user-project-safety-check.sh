@@ -62,12 +62,12 @@ check "Private key / OpenAI / Stripe token shapes" \
 
 hdr "3. Git tracking"
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  TRACKED_BUSINESS=$(git ls-files '.business/*')
+  TRACKED_BUSINESS=$(git ls-files 'business/*')
   if [ -n "$TRACKED_BUSINESS" ]; then
-    yellow "WARN: .business/ has tracked files; review privacy before commit"
+    yellow "WARN: business/ has tracked files; review privacy before commit"
     printf "%s\n" "$TRACKED_BUSINESS" | sed 's/^/  /'
   else
-    green "OK: .business/ not tracked"
+    green "OK: business/ not tracked"
   fi
 else
   yellow "WARN: not a git repository; skipped tracking checks"

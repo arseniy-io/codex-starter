@@ -6,7 +6,7 @@
 - Added `.codex/` project settings and hook-policy scaffold.
 - Added `.agents/skills/` for repo-local Codex skills.
 - Rewrote README, AUTOPILOT, troubleshooting, templates, setup prompts, and security references for Codex.
-- Kept the original methodology: `.business/`, `plans/`, `retrospectives/`, prompt library, pre-commit secret checks.
+- Kept the original methodology: `business/`, `plans/`, `retrospectives/`, prompt library, pre-commit secret checks.
 
 ## Source lineage
 

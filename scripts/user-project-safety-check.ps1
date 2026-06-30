@@ -97,12 +97,12 @@ try {
 }
 
 if ($insideGit -eq "true") {
-    $trackedBusiness = git ls-files '.business/*'
+    $trackedBusiness = git ls-files 'business/*'
     if ($trackedBusiness) {
-        Warn ".business/ has tracked files; review privacy before commit"
+        Warn "business/ has tracked files; review privacy before commit"
         $trackedBusiness | ForEach-Object { Write-Host "  $_" }
     } else {
-        Pass ".business/ not tracked"
+        Pass "business/ not tracked"
     }
 } else {
     Warn "not a git repository; skipped tracking checks"

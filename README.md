@@ -16,7 +16,7 @@
 
 ## Что получится
 
-- `.business/` - адаптивный контекст проекта. Для маленького проекта AUTOPILOT может создать компактный набор файлов; для сложного продукта - расширенную структуру: продукт, аудитория, цели, экономика, маркетинг, бренд.
+- `business/` - адаптивный контекст проекта и второй мозг бизнеса. Для маленького проекта AUTOPILOT может создать компактный набор файлов; для сложного продукта - расширенную структуру: продукт, аудитория, цели, экономика, маркетинг, бренд, `life-metrics.md` и `raw/`.
 - `ai-clone/` - личный контекст автора решений: голос, принципы, стиль мышления, feedback.
 - `mastery/` - авторские экспертные линзы и методы, которые Codex читает точечно под задачу.
 - `PROJECT_STATE.md` - короткий вход для нового окна Codex: текущий фокус, что читать сначала и что не трогать без причины.
@@ -70,7 +70,7 @@ codex-starter/
 ├── .agents/skills/        ← локальные repo-skills
 ├── ai-clone/              ← личный контекст автора решений
 ├── mastery/               ← методологии и экспертные подходы
-├── .business/             ← бизнес-контекст
+├── business/              ← бизнес-контекст и второй мозг проекта
 ├── plans/                 ← планы реализации
 ├── retrospectives/        ← ретроспективы
 ├── prompts/               ← библиотека промптов
@@ -84,7 +84,7 @@ codex-starter/
 ## Безопасность
 
 - `.env` и `.env.local` уже добавлены в `.gitignore`.
-- `.business/` по умолчанию игнорируется: AUTOPILOT создаёт её локально, потому что там быстро появляются приватная стратегия, экономика, клиенты и рабочие решения. Пример структуры смотри в `examples/` и `templates/`.
+- `business/` по умолчанию игнорируется: AUTOPILOT создаёт её локально, потому что там быстро появляются приватная стратегия, экономика, клиенты, raw-транскрипты и рабочие решения. Пример структуры смотри в `examples/` и `templates/`.
 - `ai-clone/` и `mastery/` сначала tracked как плейсхолдеры. После заполнения `POST_AUTOPILOT.md` проводит privacy-gate: оставить в приватном repo, снять с tracking или оставить только безопасную короткую версию.
 - Pre-commit hook проверяет staged-файлы на секреты.
 
@@ -121,7 +121,7 @@ bash scripts/user-project-safety-check.sh
 python scripts/starter-lint.py
 ```
 
-Он проверяет структуру starter: `.codex/autopilot-state.yml`, `.gitattributes`, отсутствие корневой `.business/`, markdown-ссылки, mojibake, hook smoke-test, `git diff --check` и старые agent-specific следы в рабочих инструкциях.
+Он проверяет структуру starter: `.codex/autopilot-state.yml`, `.gitattributes`, отсутствие корневой `business/`, markdown-ссылки, mojibake, hook smoke-test, `git diff --check` и старые agent-specific следы в рабочих инструкциях.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security-audit.ps1
@@ -152,7 +152,7 @@ echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/p
 
 1. Перед задачей Codex читает `AGENTS.md`.
 2. Затем он читает `PROJECT_STATE.md`, чтобы понять текущий фокус и 2-4 первых файла.
-3. Для продуктовых задач он берёт только нужный контекст из `.business/`.
+3. Для продуктовых задач он берёт только нужный контекст из `business/`.
 4. Для задач про автора или методологии он берёт только нужные файлы из `ai-clone/` и `mastery/`.
 5. Для новой функции создаёт план в `plans/`.
 6. После реализации запускает проверки стека.
@@ -169,7 +169,9 @@ echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/p
 
 ## Если уже есть проект
 
-Используй [`prompts/methodology/import-existing-project.md`](./prompts/methodology/import-existing-project.md). Codex прочитает структуру проекта, README и код, затем заполнит `.business/` на основе найденного и задаст вопросы по пробелам.
+Используй [`prompts/methodology/import-existing-project.md`](./prompts/methodology/import-existing-project.md). Codex прочитает структуру проекта, README и код, затем заполнит `business/` на основе найденного и задаст вопросы по пробелам.
+
+Если у тебя уже был старый проект с `.business/`, смотри [`MIGRATION_BUSINESS_FOLDER.md`](./MIGRATION_BUSINESS_FOLDER.md).
 
 ## FAQ
 
@@ -179,7 +181,11 @@ echo '{"tool":"shell","input":{"command":"rm -rf tmp"}}' | python .codex/hooks/p
 
 ### Можно ли использовать с Cursor/Windsurf/другими агентами?
 
-Методология `.business/`, `plans/`, `retrospectives/` переносима. Но `AGENTS.md`, `.codex/`, hooks и skills адаптированы под Codex.
+Методология `business/`, `plans/`, `retrospectives/` переносима. Но `AGENTS.md`, `.codex/`, hooks и skills адаптированы под Codex.
+
+### Почему `business/`, а не `.business/`?
+
+Инструкция использует видимую папку `business/`: её проще найти, объяснить и поддерживать как второй мозг проекта. Приватность сохраняется через `/business/` в `.gitignore`, а не через скрытое имя папки.
 
 ### Сколько токенов уйдёт?
 

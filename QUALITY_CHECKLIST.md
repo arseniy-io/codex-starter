@@ -17,9 +17,9 @@
 ## Adaptivity
 
 - [ ] AUTOPILOT умеет выбрать глубину `lite`, `standard` или `deep`.
-- [ ] `lite`-проект по умолчанию ограничен `PROJECT_STATE.md`, `.business/INDEX.md` и 3-5 короткими `.business`-файлами.
-- [ ] Маленький проект не получает лишние `ai-clone/`, `mastery/` и большую библиотеку без причины.
-- [ ] `standard`-проект по умолчанию ограничен 6-10 рабочими файлами, а не всей `.business/`.
+- [ ] `lite`-проект по умолчанию ограничен `PROJECT_STATE.md`, `business/INDEX.md`, `business/life-metrics.md` и 3-5 короткими `business`-файлами.
+- [ ] Маленький проект сохраняет базовые placeholder-слои `ai-clone/` и `mastery/`, но не получает их глубокое заполнение и большую библиотеку без причины.
+- [ ] `standard`-проект по умолчанию ограничен 6-10 рабочими файлами, а не всей `business/`.
 - [ ] В `standard` не создаются `roles-and-permissions`, `security-model`, `integrations`, `roadmap` и `execution` без явного deep-триггера.
 - [ ] Слабые deep-триггеры записываются как `Осторожно позже`, а не разворачиваются в отдельный risk/trust слой.
 - [ ] Для коротких или мутных ответов пользователя AUTOPILOT отделяет факты, интерпретации и вопросы на потом.
@@ -29,9 +29,11 @@
 - [ ] AUTOPILOT нельзя считать завершённым, пока `.codex/autopilot-state.yml` не показывает `autopilot.completed: true`, `autopilot.current_stage: done`, `autopilot.last_completed_step: 10`.
 - [ ] Если папка не является git-репозиторием, AUTOPILOT пропускает stage/commit без ошибки и не запускает `git init` автоматически.
 - [ ] `POST_AUTOPILOT.md` явно предлагается как необязательный второй этап, особенно для `lite`.
-- [ ] В личном экспертном проекте `.business/`, `ai-clone/` и `mastery/` не смешиваются.
-- [ ] В `.business/INDEX.md` есть минимальный набор файлов, которые Codex обычно должен читать дальше.
-- [ ] `PROJECT_STATE.md` не дублирует `.business/`, `ai-clone/`, `mastery/`, планы или ретро.
+- [ ] В личном экспертном проекте `business/`, `ai-clone/` и `mastery/` не смешиваются.
+- [ ] В `business/INDEX.md` есть минимальный набор файлов, которые Codex обычно должен читать дальше.
+- [ ] `business/life-metrics.md` создаётся в любом flow и используется для метрик, выручки, клиентов, конверсий, цен и дат.
+- [ ] `business/raw/` создаётся как зона исходников и не входит в обязательный стартовый маршрут чтения.
+- [ ] `PROJECT_STATE.md` не дублирует `business/`, `ai-clone/`, `mastery/`, планы или ретро.
 - [ ] В `PROJECT_STATE.md` указано не больше 2-5 ключевых файлов проекта.
 - [ ] Новый Codex-маршрут короткий: `AGENTS.md` → `PROJECT_STATE.md` → индекс нужной зоны → 1-3 файла.
 - [ ] У основных слоёв есть lifecycle: когда читать, когда обновлять и когда не трогать.
@@ -65,11 +67,11 @@
 
 - [ ] `.env`, `.env.local`, `.env.*.local` игнорируются.
 - [ ] `.codex/config.local.toml` игнорируется.
-- [ ] `.business/` игнорируется по умолчанию и снимается с tracking, если была случайно tracked.
+- [ ] `business/` игнорируется по умолчанию и снимается с tracking, если была случайно tracked.
 - [ ] После заполнения `ai-clone/` privacy-gate зафиксировал решение: private tracked, ignored или safe summary only.
 - [ ] `mastery/` не содержит длинных копий copyrighted-текста.
 - [ ] Финальный commit делается только после просмотра staged-файлов и отдельного подтверждения пользователя.
-- [ ] Pre-commit hook блокирует секреты и случайный коммит `.business/`.
+- [ ] Pre-commit hook блокирует секреты и случайный коммит `business/`.
 - [ ] User project safety check проходит: `scripts/user-project-safety-check.ps1` на Windows или `scripts/user-project-safety-check.sh` в bash/Git Bash.
 - [ ] Starter lint проходит: `python scripts/starter-lint.py`.
 - [ ] `.gitattributes` фиксирует LF для Markdown, YAML, JSON, Python, PowerShell и shell-скриптов.
@@ -80,7 +82,8 @@
 ## Example
 
 - [ ] `examples/coffeeshop/` содержит пример `AGENTS.md`.
-- [ ] Пример показывает `.business/`, `plans/`, `retrospectives/`.
+- [ ] Пример показывает `business/`, `plans/`, `retrospectives/`.
+- [ ] Пример показывает `business/life-metrics.md` или объясняет, где он создаётся.
 - [ ] Пример явно помечен как вымышленный.
 - [ ] Пример не содержит реальных контактов, email, ключей или персональных данных.
 
@@ -93,6 +96,6 @@
 - [ ] Проверить, что Codex читает `autopilot/flows/common.md` и только выбранный flow.
 - [ ] Проверить, что после AUTOPILOT `POST_AUTOPILOT.md` предлагается как опциональный второй этап, а не обязательное продолжение.
 - [ ] Проверить, что `plan → implement → verify → retro` объясняется без обязательного `hello-test` в корне проекта.
-- [ ] В новом окне Codex может назвать текущий фокус и следующий шаг, не читая всю `.business/`.
+- [ ] В новом окне Codex может назвать текущий фокус и следующий шаг, не читая всю `business/`.
 - [ ] Для публикации starter пройти `autopilot/NEW_WINDOW_TEST.md` и записать один главный следующий пункт улучшения.
 - [ ] Для публикации starter пройти `python scripts/starter-lint.py` перед `security-audit`.

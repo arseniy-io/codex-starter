@@ -6,7 +6,7 @@
 
 **Цель:** настроить проект так, чтобы новое окно Codex быстро понимало задачу и читало минимум файлов.
 
-**Главный результат:** `AGENTS.md`, `PROJECT_STATE.md`, `.business/INDEX.md` и короткий набор рабочих контекстных файлов.
+**Главный результат:** `AGENTS.md`, `PROJECT_STATE.md`, `business/INDEX.md`, `business/life-metrics.md`, `business/raw/` и короткий набор рабочих контекстных файлов.
 
 **Когда запускать:** только если `autopilot.completed: false` в `.codex/autopilot-state.yml` и пользователь готов настраивать проект.
 
@@ -30,7 +30,7 @@
 4. Не включай рискованные режимы без подтверждений пользователя.
 5. Перед shell-командами объясняй, зачем они нужны.
 6. Говори коротко: пользователь учится, ему нужна ясность, а не лекция.
-7. Не коммить `.business/` после заполнения реальными данными.
+7. Не коммить `business/` после заполнения реальными данными.
 8. Если AUTOPILOT проходит в тестовой копии, все изменения, планы, ретро и отчёты пиши только внутри этой копии. Не меняй основной starter.
 9. Все Markdown-файлы сохраняй в UTF-8, чтобы отчёты читались без mojibake/вопросиков.
 10. Не говори, что AUTOPILOT завершён, пока `.codex/autopilot-state.yml` не показывает `autopilot.completed: true`, `autopilot.current_stage: done`, `autopilot.last_completed_step: 10`.
@@ -61,7 +61,7 @@
 
 Затем спроси ОС: Windows / macOS / Linux. Запиши в `.codex/autopilot-state.yml`: `autopilot.os: windows|macos|linux`.
 
-Проверь `.vscode/settings.json`: `.business/` должна быть видна в сайдбаре.
+Проверь `.vscode/settings.json`: `business/` должна быть видна в сайдбаре.
 
 Обнови state: `last_completed_step: 1`, `current_stage: project_type`, `last_completed_substep: null`.
 
@@ -146,27 +146,27 @@ git status --short --branch
 
 Скажи:
 
-> «Техническая часть готова. Дальше заполним `.business/` - это контекст, который будет экономить токены и улучшать решения. Продолжаем сейчас или сделаем паузу?»
+> «Техническая часть готова. Дальше заполним `business/` - это контекст, который будет экономить токены и улучшать решения. Продолжаем сейчас или сделаем паузу?»
 
 Если пользователь выбирает паузу, остановись после обновления state: `last_completed_step: 7`, `current_stage: business_pause`, `last_completed_substep: paused_before_business`.
 
 Если пользователь продолжает, обнови state: `last_completed_step: 7`, `current_stage: business_context`, `last_completed_substep: business_started`, затем переходи к шагу 8 и выбери единую глубину онбординга: `lite`, `standard` или `deep`.
 
-Если пользователь хочет быстрый старт, рекомендуй `lite`: минимальный `.business/INDEX.md`, 3-5 коротких `.business`-файлов, `PROJECT_STATE.md` и ближайший следующий шаг. Если видишь сильный deep-триггер, предупреди об этом и предложи `standard` или `deep`.
+Если пользователь хочет быстрый старт, рекомендуй `lite`: минимальный `business/INDEX.md`, `business/life-metrics.md`, `business/raw/`, 3-5 коротких `business`-файлов, `PROJECT_STATE.md` и ближайший следующий шаг. Если видишь сильный deep-триггер, предупреди об этом и предложи `standard` или `deep`.
 
 Не создавай файл, если непонятно, когда Codex будет читать его в будущих задачах.
 
-## Шаг 8. Интервью и заполнение `.business/`
+## Шаг 8. Интервью и заполнение `business/`
 
 Сначала выбери глубину онбординга и объясни её пользователю. Используй только одну шкалу:
 
-- `lite` - маленький лендинг, личная страница, портфолио, локальная услуга, простой внутренний инструмент. Цель: 3-5 коротких бизнес-файлов, `PROJECT_STATE.md` и понятный следующий шаг. Не создавай `ai-clone/` и `mastery/` даже плейсхолдерами без прямой причины.
-- `standard` - обычный продукт или коммерческий сайт средней сложности. Цель: 6-10 рабочих файлов, а не вся `.business/`. Не создавай `roles-and-permissions`, `security-model`, `integrations`, `roadmap` и `execution` без явного deep-триггера.
+- `lite` - маленький лендинг, личная страница, портфолио, локальная услуга, простой внутренний инструмент. Цель: 3-5 коротких бизнес-файлов, `business/life-metrics.md`, `business/raw/`, `PROJECT_STATE.md` и понятный следующий шаг. `ai-clone/` и `mastery/` остаются базовыми placeholder-слоями starter, но не заполняй их глубоко без прямой задачи про стиль, голос, предпочтения или методологию.
+- `standard` - обычный продукт или коммерческий сайт средней сложности. Цель: 6-10 рабочих файлов, а не вся `business/`. Не создавай `roles-and-permissions`, `security-model`, `integrations`, `roadmap` и `execution` без явного deep-триггера.
 - `deep` - SaaS, marketplace, продукт с ролями, платежами, интеграциями, пользовательскими данными или долгим roadmap. Цель: кроме обычного бизнес-контекста создать короткие файлы про scope, роли, данные, security/trust и интеграции.
 
-Если пользователь просит пройти быстро или проект маленький, рекомендуй `lite` и скажи, что `POST_AUTOPILOT.md`, `ai-clone/`, `mastery/`, глубокие методологии и опциональные интеграции можно оставить на потом.
+Если пользователь просит пройти быстро или проект маленький, рекомендуй `lite` и скажи, что глубокое заполнение `ai-clone/` и `mastery/`, `POST_AUTOPILOT.md`, глубокие методологии и опциональные интеграции можно оставить на потом.
 
-Целевой стартовый маршрут после онбординга: `lite` - 3-4 файла всего, `standard` - 4-5 файлов всего, `deep` - 5-6 файлов всего вместе с `AGENTS.md`, `PROJECT_STATE.md` и `.business/INDEX.md`.
+Целевой стартовый маршрут после онбординга: `lite` - 4-5 файлов всего, `standard` - 5-6 файлов всего, `deep` - 6-7 файлов всего вместе с `AGENTS.md`, `PROJECT_STATE.md`, `business/INDEX.md` и `business/life-metrics.md`. `business/raw/` не входит в стартовый маршрут.
 
 Скажи коротко:
 
@@ -238,9 +238,9 @@ autopilot:
 
 Проверь вход нового окна Codex:
 
-1. Назови маршрут чтения для новой сессии: `AGENTS.md` -> `PROJECT_STATE.md` -> `.business/INDEX.md` -> 1-3 нужных файла.
-2. Для `lite` маршрут должен занимать 3-4 файла всего, для `standard` - 4-5 файлов всего, для `deep` - 5-6 файлов всего вместе с короткой deep-картой в `PROJECT_STATE.md`.
-3. Если для понимания проекта нужно больше файлов, не продолжай онбординг. Сначала сократи `PROJECT_STATE.md`, обнови `.business/INDEX.md` и убери лишние файлы из обязательного чтения.
+1. Назови маршрут чтения для новой сессии: `AGENTS.md` -> `PROJECT_STATE.md` -> `business/INDEX.md` -> 1-3 нужных файла. Если задача про живые цифры, добавляется `business/life-metrics.md`.
+2. Для `lite` маршрут должен занимать 4-5 файлов всего, для `standard` - 5-6 файлов всего, для `deep` - 6-7 файлов всего вместе с короткой deep-картой в `PROJECT_STATE.md`.
+3. Если для понимания проекта нужно больше файлов, не продолжай онбординг. Сначала сократи `PROJECT_STATE.md`, обнови `business/INDEX.md` и убери лишние файлы из обязательного чтения.
 4. Это не аудит всей папки. Проверяй только стартовый маршрут и минимальный набор чтения.
 5. Для отдельной проверки starter перед публикацией используй `autopilot/NEW_WINDOW_TEST.md`.
 
@@ -271,23 +271,23 @@ git rev-parse --is-inside-work-tree
 
 Если git доступен, перед коммитом:
 
-1. Убедись, что `.business/` есть в `.gitignore`. В starter она должна быть ignored по умолчанию, потому что после онбординга там реальные данные проекта.
-2. Если `.business/` когда-либо была tracked, сними её с tracking:
+1. Убедись, что `business/` есть в `.gitignore`. В starter она должна быть ignored по умолчанию, потому что после онбординга там реальные данные проекта.
+2. Если `business/` когда-либо была tracked, сними её с tracking:
 
 Windows/PowerShell:
 
 ```powershell
-$trackedBusiness = git ls-files '.business/*'
-if ($trackedBusiness) { git rm -r --cached .business/ }
+$trackedBusiness = git ls-files 'business/*'
+if ($trackedBusiness) { git rm -r --cached business/ }
 ```
 
 macOS/Linux/Git Bash:
 
 ```bash
-if [ -n "$(git ls-files '.business/*')" ]; then git rm -r --cached .business/; fi
+if [ -n "$(git ls-files 'business/*')" ]; then git rm -r --cached business/; fi
 ```
 
-3. Убедись, что `.business/`, `.env` и локальные Codex config не попали в индекс.
+3. Убедись, что `business/`, `.env` и локальные Codex config не попали в индекс.
 4. Покажи `git status --short` и коротко объясни, какие файлы предлагаешь включить в первый коммит.
 
 Если всё чисто и пользователь согласен, стейджи файлы поимённо. Не используй `git add -A` как основной путь.
@@ -306,7 +306,7 @@ git add -- AGENTS.md PROJECT_STATE.md .gitignore .codex/config.toml .codex/hooks
 git status --short
 ```
 
-Если в staged нет `.business/`, `.env`, локальных config и лишних личных файлов, коротко покажи итог staged-файлов и спроси финальное подтверждение на commit.
+Если в staged нет `business/`, `.env`, локальных config и лишних личных файлов, коротко покажи итог staged-файлов и спроси финальное подтверждение на commit.
 
 Только после подтверждения сделай commit:
 

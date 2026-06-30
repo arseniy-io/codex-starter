@@ -29,7 +29,7 @@
 
 ## Follow-up (если нужно)
 
-*Задачи, которые всплыли и идут в `.business/execution/backlog.md` или в новый план.*
+*Задачи, которые всплыли и идут в `business/execution/backlog.md` или в новый план.*
 
 ## Feedback rule (если нужно)
 

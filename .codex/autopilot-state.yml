@@ -18,5 +18,6 @@ post_autopilot:
   completed: false
   last_completed_stage: 0
   started_at: null
+  privacy_business: null
   privacy_ai_clone: null
   privacy_mastery: null

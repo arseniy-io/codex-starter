@@ -97,6 +97,7 @@ def check_autopilot_state() -> None:
         "post_autopilot:",
         "  completed: false",
         "  last_completed_stage: 0",
+        "  privacy_business: null",
         "  privacy_ai_clone: null",
         "  privacy_mastery: null",
     ]
@@ -116,18 +117,160 @@ def check_autopilot_state() -> None:
 
 
 def check_business_clean() -> None:
-    business_dir = ROOT / ".business"
+    business_dir = ROOT / "business"
     if business_dir.exists():
-        fail("root .business absent in starter-template", rel(business_dir))
+        fail("root business absent in starter-template", rel(business_dir))
     else:
-        ok("root .business absent")
+        ok("root business absent")
 
-    git = run(["git", "ls-files", ".business/*"])
+    git = run(["git", "ls-files", "business/*"])
     tracked = [line for line in git.stdout.splitlines() if line.strip()]
     if tracked:
-        fail("root .business not tracked", "\n  ".join(tracked))
+        fail("root business not tracked", "\n  ".join(tracked))
     else:
-        ok("root .business not tracked")
+        ok("root business not tracked")
+
+
+def check_no_legacy_business_traces(files: list[Path]) -> None:
+    allowed_prefixes = {
+        "maintainer/history/",
+    }
+    allowed_files = {
+        "CODEX_MIGRATION.md",
+        "MIGRATION_BUSINESS_FOLDER.md",
+        "plans/2026-06-21-starter-technical-cleanup.md",
+        "README.md",
+        "TROUBLESHOOTING.md",
+    }
+    hits: list[str] = []
+    for path in files:
+        relative = rel(path)
+        if relative == "scripts/starter-lint.py":
+            continue
+        if relative in allowed_files or any(relative.startswith(prefix) for prefix in allowed_prefixes):
+            continue
+        text = read_text(path)
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            if ".business" in line:
+                hits.append(f"{relative}:{line_no}:{line[:140]}")
+    if hits:
+        fail("no legacy .business model in working files", "\n  ".join(hits))
+    else:
+        ok("no legacy .business model in working files")
+
+
+def check_instruction_alignment() -> None:
+    required_snippets = [
+        (
+            "README explains business/life-metrics/raw",
+            ROOT / "README.md",
+            ["business/", "life-metrics.md", "raw/"],
+        ),
+        (
+            "AUTOPILOT creates business/life-metrics/raw",
+            ROOT / "AUTOPILOT.md",
+            ["business/INDEX.md", "business/life-metrics.md", "business/raw/"],
+        ),
+        (
+            "common flow defines live metrics and raw",
+            ROOT / "autopilot" / "flows" / "common.md",
+            ["business/life-metrics.md", "LIVE", "business/raw/"],
+        ),
+        (
+            "business interview prompt creates live metrics and raw",
+            ROOT / "prompts" / "setup" / "04-business-interview.md",
+            ["life-metrics.md", "raw/", "LIVE"],
+        ),
+        (
+            "import prompt creates live metrics and raw",
+            ROOT / "prompts" / "methodology" / "import-existing-project.md",
+            ["business/life-metrics.md", "business/raw/", "LIVE"],
+        ),
+        (
+            "AGENTS template routes live metrics",
+            ROOT / "templates" / "AGENTS.md.tmpl",
+            ["business/INDEX.md", "business/life-metrics.md", "LIVE"],
+        ),
+        (
+            "PROJECT_STATE template routes live metrics",
+            ROOT / "templates" / "PROJECT_STATE.md.tmpl",
+            ["business/INDEX.md", "business/life-metrics.md"],
+        ),
+        (
+            "quality checklist covers instruction folders",
+            ROOT / "QUALITY_CHECKLIST.md",
+            ["business/life-metrics.md", "business/raw/"],
+        ),
+        (
+            "coffeeshop AGENTS routes live metrics",
+            ROOT / "examples" / "coffeeshop" / "AGENTS.md",
+            ["business/INDEX.md", "business/life-metrics.md", "business/raw/"],
+        ),
+    ]
+    missing: list[str] = []
+    for label, path, snippets in required_snippets:
+        text = read_text(path)
+        absent = [snippet for snippet in snippets if snippet not in text]
+        if absent:
+            missing.append(f"{label}: {rel(path)} missing {', '.join(absent)}")
+    if missing:
+        fail("instruction alignment checks", "\n  ".join(missing))
+    else:
+        ok("instruction alignment checks")
+
+    lite_flow = read_text(ROOT / "autopilot" / "flows" / "lite.md")
+    forbidden_lite_phrases = [
+        "Не создавай `goals/`, `economics/`, `execution/`, `ai-clone/`, `mastery/`",
+        "Не создавай `ai-clone/`",
+        "Не создавай `mastery/`",
+    ]
+    found = [phrase for phrase in forbidden_lite_phrases if phrase in lite_flow]
+    if found:
+        fail("lite flow keeps ai-clone/mastery as starter placeholders", ", ".join(found))
+    else:
+        ok("lite flow keeps ai-clone/mastery as starter placeholders")
+
+    expected_ai_clone_files = [
+        "ai-clone/INDEX.md",
+        "ai-clone/role.md",
+        "ai-clone/identity/values.md",
+        "ai-clone/identity/vision.md",
+        "ai-clone/identity/mission.md",
+        "ai-clone/identity/biography.md",
+        "ai-clone/voice/tone.md",
+        "ai-clone/voice/vocabulary.md",
+        "ai-clone/voice/stop-words.md",
+        "ai-clone/thinking/mental-models.md",
+        "ai-clone/principles/product.md",
+        "ai-clone/principles/code.md",
+        "ai-clone/principles/business.md",
+        "ai-clone/feedback/README.md",
+        "ai-clone/style/telegram-format.md",
+        "ai-clone/style/general.md",
+        "ai-clone/reference/README.md",
+    ]
+    missing_ai_clone = [path for path in expected_ai_clone_files if not (ROOT / path).exists()]
+    if missing_ai_clone:
+        fail("ai-clone instruction skeleton", ", ".join(missing_ai_clone))
+    else:
+        ok("ai-clone instruction skeleton")
+
+    wiki_link_checks = {
+        "examples/coffeeshop/business/audience/avatar.md": ["[[objections]]", "[[overview]]"],
+        "examples/coffeeshop/business/audience/objections.md": ["[[avatar]]", "[[funnel]]"],
+        "examples/coffeeshop/business/products/overview.md": ["[[pricing]]", "[[avatar]]"],
+        "autopilot/flows/common.md": ["Wiki-links внутри `business/`", "[[имя-файла-без-расширения]]"],
+    }
+    missing_wiki_links: list[str] = []
+    for relative, snippets in wiki_link_checks.items():
+        text = read_text(ROOT / relative)
+        absent = [snippet for snippet in snippets if snippet not in text]
+        if absent:
+            missing_wiki_links.append(f"{relative} missing {', '.join(absent)}")
+    if missing_wiki_links:
+        fail("business wiki-links guidance", "\n  ".join(missing_wiki_links))
+    else:
+        ok("business wiki-links guidance")
 
 
 def check_gitattributes_policy() -> None:
@@ -324,6 +467,8 @@ def main() -> int:
     files = iter_files()
     check_autopilot_state()
     check_business_clean()
+    check_no_legacy_business_traces(files)
+    check_instruction_alignment()
     check_gitattributes_policy()
     check_hooks_json()
     check_markdown_links(files)
