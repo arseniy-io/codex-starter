@@ -32,7 +32,7 @@ check() {
   shift
   local result
   # Исключаем scripts/ (сам аудит), .github/hooks/ (pre-commit hook использует те же regex-паттерны легитимно)
-  result=$(grep -rnE "$@" . --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=scripts --exclude-dir=hooks 2>/dev/null)
+  result=$(grep -rnE "$@" . --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=__pycache__ --exclude-dir=scripts --exclude-dir=hooks 2>/dev/null)
   if [ -n "$result" ]; then
     red "FAIL: $label"
     echo "$result"
@@ -70,13 +70,13 @@ if [ -f .env.local ];                     then red "FAIL: .env.local present"; F
 if [ -f .codex/config.local.toml ];       then red "FAIL: .codex/config.local.toml"; FAIL=1; else green "OK: no config.local.toml"; fi
 
 hdr "7. Бренд smyslokod (допускается только в 3 местах)"
-BRAND_HITS=$(grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=scripts 2>/dev/null | wc -l | tr -d ' ')
+BRAND_HITS=$(grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=scripts 2>/dev/null | wc -l | tr -d ' ')
 if [ "$BRAND_HITS" -le 8 ]; then
   green "OK: $BRAND_HITS упоминаний (в пределах разрешённого - README URL/footer + AUTOPILOT приветствие/CTA + AGENTS.md приветствие + skill attribution)"
-  grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=scripts 2>/dev/null | sed 's/^/  /'
+  grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=scripts 2>/dev/null | sed 's/^/  /'
 else
   yellow "WARN: $BRAND_HITS упоминаний - проверь вручную что это только CTA/footer/URL"
-  grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=scripts 2>/dev/null | sed 's/^/  /'
+  grep -rniE "smyslokod|школе смысло|смысло-кодинга" . --exclude-dir=.git --exclude-dir=__pycache__ --exclude-dir=scripts 2>/dev/null | sed 's/^/  /'
 fi
 
 hdr "РЕЗУЛЬТАТ"

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # scripts/user-project-safety-check.sh
 #
-# Мягкая проверка реального проекта после AUTOPILOT.
-# Не проверяет автора методологии, бренд starter или сторонние email.
+# Мягкая проверка рабочего проекта.
+# Не проверяет автора, бренд или сторонние email.
 # Не читает содержимое .env-файлов: только проверяет, что их нет в корне.
 #
 # Запуск:
@@ -28,6 +28,7 @@ check() {
   result=$(grep -rnE "$@" . \
     --exclude-dir=.git \
     --exclude-dir=node_modules \
+    --exclude-dir=__pycache__ \
     --exclude-dir=.next \
     --exclude-dir=dist \
     --exclude-dir=build \

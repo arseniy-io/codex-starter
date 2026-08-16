@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "purpose": "Эталонные минимальные результаты перед очисткой. Это проверка границ flow, а не требование создавать лишние файлы.",
+  "common_required_files": [
+    "business/INDEX.md",
+    "business/life-metrics.md",
+    "business/raw/README.md",
+    "business/company/about.md",
+    "business/products/overview.md",
+    "business/audience/avatar.md"
+  ],
+  "flows": {
+    "lite": {
+      "working_markdown_files": [
+        3,
+        5
+      ],
+      "required_files": [],
+      "required_any": [
+        [
+          "business/marketing/funnel.md",
+          "business/marketing/channels.md",
+          "business/products/pricing.md",
+          "business/assets/brand-guidelines.md"
+        ]
+      ],
+      "forbidden_paths": [
+        "business/goals/",
+        "business/economics/",
+        "business/execution/",
+        "business/products/roles-and-permissions.md",
+        "business/products/security-model.md",
+        "business/products/integrations.md",
+        "business/products/roadmap.md"
+      ],
+      "required_content": {},
+      "reference_minimum": [
+        "business/INDEX.md",
+        "business/life-metrics.md",
+        "business/raw/README.md",
+        "business/company/about.md",
+        "business/products/overview.md",
+        "business/audience/avatar.md",
+        "business/marketing/funnel.md"
+      ]
+    },
+    "standard": {
+      "working_markdown_files": [
+        6,
+        10
+      ],
+      "required_files": [
+        "business/marketing/funnel.md"
+      ],
+      "required_any": [],
+      "forbidden_paths": [
+        "business/execution/",
+        "business/products/roles-and-permissions.md",
+        "business/products/security-model.md",
+        "business/products/integrations.md",
+        "business/products/roadmap.md"
+      ],
+      "required_content": {},
+      "reference_minimum": [
+        "business/INDEX.md",
+        "business/life-metrics.md",
+        "business/raw/README.md",
+        "business/company/about.md",
+        "business/products/overview.md",
+        "business/audience/avatar.md",
+        "business/audience/objections.md",
+        "business/marketing/funnel.md"
+      ]
+    },
+    "deep": {
+      "working_markdown_files": [
+        4,
+        8
+      ],
+      "required_files": [],
+      "required_any": [
+        [
+          "business/products/roles-and-permissions.md",
+          "business/products/security-model.md",
+          "business/products/integrations.md",
+          "business/products/payments.md"
+        ]
+      ],
+      "forbidden_paths": [],
+      "required_content": {
+        "business/products/overview.md": [
+          "MVP сейчас",
+          "Later",
+          "Не делаем"
+        ]
+      },
+      "reference_minimum": [
+        "business/INDEX.md",
+        "business/life-metrics.md",
+        "business/raw/README.md",
+        "business/company/about.md",
+        "business/products/overview.md",
+        "business/audience/avatar.md",
+        "business/marketing/funnel.md",
+        "business/products/roles-and-permissions.md",
+        "business/products/security-model.md",
+        "business/products/integrations.md"
+      ]
+    }
+  }
+}

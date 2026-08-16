@@ -2,7 +2,7 @@
 
 ## Что сделали
 
-- Прошли фазы 1-9 плана `plans/2026-06-21-starter-technical-cleanup.md`.
+- Прошли фазы 1-9 плана `maintainer/history/plans/2026-06-21-starter-technical-cleanup.md`.
 - Отделили историю разработки starter в `maintainer/history/`.
 - Очистили root placeholders и перенесли заполненный SyncDesk-пример в `examples/syncdesk/`.
 - Вынесли mutable onboarding state в `.codex/autopilot-state.yml`.

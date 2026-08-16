@@ -1,9 +1,12 @@
-# Mutable state for Codex Starter onboarding.
-# AUTOPILOT.md and POST_AUTOPILOT.md are stable scenario files; update this
-# file while onboarding instead of editing their headers.
+# Mutable state for Codex Starter onboarding and finalization.
+# Scenario files stay stable. Answers belong in project context files; this
+# file stores only progress, decisions and safe recovery checkpoints.
+
+schema_version: 2
 
 autopilot:
   completed: false
+  interview_completed: false
   current_stage: start
   current_flow: null
   last_completed_step: 0
@@ -16,8 +19,52 @@ autopilot:
 
 post_autopilot:
   completed: false
+  decision: pending
   last_completed_stage: 0
   started_at: null
   privacy_business: null
   privacy_ai_clone: null
   privacy_mastery: null
+
+finalization:
+  current_stage: interview
+  last_safe_stage: interview
+  preview_id: null
+  preview_tree_hash: null
+  approved_preview_id: null
+  started_at: null
+  completed_at: null
+
+answer_states:
+  project_identity: pending
+  primary_audience: pending
+  nearest_result: pending
+  first_scope: pending
+  next_step: pending
+  onboarding_depth: pending
+  lite_primary_action: pending
+  lite_trust: pending
+  lite_style: pending
+  standard_user_problem: pending
+  standard_mvp_boundary: pending
+  standard_user_path: pending
+  standard_pricing: pending
+  standard_objections: pending
+  standard_channels: pending
+  standard_deep_trigger_screen: pending
+  deep_mvp_boundaries: pending
+  deep_roles: pending
+  deep_data: pending
+  deep_integrations: pending
+  deep_payments: pending
+  deep_files_audit: pending
+  deep_ai_boundary: pending
+  deep_trust_security: pending
+  deep_economics: pending
+  deep_marketing_assets: pending
+  deep_reality_check: pending
+  post_autopilot_decision: pending
+  privacy_business: pending
+  privacy_ai_clone: pending
+  privacy_mastery: pending
+  remote_decision: pending

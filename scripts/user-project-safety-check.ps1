@@ -1,10 +1,10 @@
 <#
 scripts/user-project-safety-check.ps1
 
-Windows-friendly safety check for a real user project after AUTOPILOT setup.
+Windows-friendly safety check for a working project.
 
-This is intentionally softer than scripts/security-audit.ps1:
-- no author/brand/cohort checks;
+This intentionally checks project risks rather than publication metadata:
+- no author or brand checks;
 - no broad third-party email scan;
 - no reading .env contents.
 
@@ -45,6 +45,7 @@ function Get-ProjectFiles {
             $name = $_.Name
             $path -notmatch "\\\.git\\" -and
             $path -notmatch "\\node_modules\\" -and
+            $path -notmatch "\\__pycache__\\" -and
             $path -notmatch "\\\.next\\" -and
             $path -notmatch "\\dist\\" -and
             $path -notmatch "\\build\\" -and

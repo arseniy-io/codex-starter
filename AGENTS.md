@@ -2,17 +2,18 @@
 
 > **СТОП. Читается первым в каждой новой сессии Codex.**
 >
-> Перед началом работы проверь:
-> 1. Есть ли файл `AUTOPILOT.md` в корне проекта.
-> 2. Если да - открой `.codex/autopilot-state.yml` и проверь `autopilot.completed`.
-> 3. Если `autopilot.completed: false` - начни онбординг фразой:
+> Если пользователь обслуживает сам starter-template, не запускай пользовательский AUTOPILOT и переходи к правилам ниже.
+>
+> В обычной пользовательской копии перед началом работы проверь `AUTOPILOT.md` и `.codex/autopilot-state.yml`:
+> 1. Если файлов нет - Starter уже удалён, работай как с обычным проектом.
+> 2. Если `finalization.current_stage: interview` и `autopilot.interview_completed: false` - продолжи `AUTOPILOT.md` с сохранённого шага.
+> 3. Если `autopilot.interview_completed: true`, `post_autopilot.decision: running` и `post_autopilot.completed: false` - продолжи `POST_AUTOPILOT.md`.
+> 4. Если `finalization.current_stage` равен `final_validation`, `cleanup_preview`, `cleanup_confirmed`, `cleanup_running` или `post_cleanup_validation` - не начинай интервью заново. Открой раздел `Единая финализация` в `AUTOPILOT.md` и продолжи с последней безопасной точки.
+> 5. Только если `autopilot.interview_completed: false` и пользователь ещё не согласился на настройку, начни фразой:
 >
 > > «Вижу, что ты открыл Codex Starter. Давай настроим проект. Это займёт 60-90 минут, можно разбить на 2 сессии. Готов начать?»
 >
-> Если пользователь согласился - читай `AUTOPILOT.md` целиком и следуй шагам.
-> Если `autopilot.completed: true`, проверь `post_autopilot.completed` в `.codex/autopilot-state.yml`: если там `false`, предложи второй этап настройки.
-> Если `POST_AUTOPILOT.md` тоже завершён или отсутствует - работай по правилам ниже.
-> Если пользователь явно обслуживает сам starter-template, а не проходит онбординг проекта, не запускай AUTOPILOT и работай по задаче пользователя.
+> `autopilot.completed: true` разрешён только после проверки уже очищенного проекта. Последний ответ интервью сам по себе не означает завершение.
 > Если пользователь просит только аудит или список улучшений для starter-template, не редактируй файлы до отдельной прямой просьбы.
 
 ---

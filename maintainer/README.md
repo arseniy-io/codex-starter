@@ -9,6 +9,7 @@
 - `history/plans/` - старые планы разработки starter.
 - `history/retrospectives/` - ретро прошлых сессий по starter.
 - `history/experiments/` - отчёты stress-test и сравнительных прогонов.
+- `releases/` - локальные release notes и точный состав внешних действий перед публикацией.
 
 ## Как пользоваться
 

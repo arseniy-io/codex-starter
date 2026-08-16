@@ -2,13 +2,14 @@
 """Structural lint for Codex Starter.
 
 By default this script checks the pristine starter-template shape, not a user
-project's app code. Use ``--onboarded`` for a copy after AUTOPILOT has finished.
-It intentionally has no third-party dependencies.
+project's app code. Use ``--onboarded`` for a copy after the interview and
+before the confirmed cleanup. It intentionally has no third-party dependencies.
 """
 
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import re
 import subprocess
@@ -33,6 +34,26 @@ TEXT_SUFFIXES = {
 
 
 failures: list[str] = []
+
+PUBLIC_SURFACES = [
+    "README.md",
+    "AGENTS.md",
+    "PROJECT_STATE.md",
+    "STRUCTURE.md",
+    "TROUBLESHOOTING.md",
+    "QUALITY_CHECKLIST.md",
+    "CHANGELOG.md",
+]
+
+PLACEHOLDER_PATTERNS = [
+    re.compile(r"\{\{[^{}\n]+\}\}"),
+    re.compile(
+        r"\[(?:ISO-время|preview_id|точный список|название|описание|значение|"
+        r"источник|ГГГГ-ММ-ДД|lite/standard/deep|1-2 причины)[^\]]*\]",
+        re.IGNORECASE,
+    ),
+    re.compile(r"\b(?:TBD|CHANGEME|REPLACE_ME)\b", re.IGNORECASE),
+]
 
 
 def rel(path: Path) -> str:
@@ -77,6 +98,33 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def check_utf8(files: list[Path]) -> bool:
+    unreadable: list[str] = []
+    for path in files:
+        try:
+            read_text(path)
+        except UnicodeDecodeError as exc:
+            unreadable.append(f"{rel(path)}: byte {exc.start}")
+
+    if unreadable:
+        fail("UTF-8 readable", "\n  ".join(unreadable))
+        return False
+    ok("all checked text files are UTF-8 readable")
+    return True
+
+
+def normalized_hash(path: Path) -> str:
+    data = path.read_bytes()
+    if path.suffix.lower() in TEXT_SUFFIXES or path.name.endswith(".sample"):
+        try:
+            text = data.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            pass
+        else:
+            data = text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+    return hashlib.sha256(data).hexdigest()
+
+
 def check_autopilot_state() -> None:
     state_path = ROOT / ".codex" / "autopilot-state.yml"
     if not state_path.exists():
@@ -85,8 +133,10 @@ def check_autopilot_state() -> None:
 
     state = read_text(state_path)
     required = [
+        "schema_version: 2",
         "autopilot:",
         "  completed: false",
+        "  interview_completed: false",
         "  current_stage: start",
         "  current_flow: null",
         "  last_completed_step: 0",
@@ -98,10 +148,24 @@ def check_autopilot_state() -> None:
         "  onboarding_depth: null",
         "post_autopilot:",
         "  completed: false",
+        "  decision: pending",
         "  last_completed_stage: 0",
         "  privacy_business: null",
         "  privacy_ai_clone: null",
         "  privacy_mastery: null",
+        "finalization:",
+        "  current_stage: interview",
+        "  last_safe_stage: interview",
+        "  preview_id: null",
+        "answer_states:",
+        "  project_identity: pending",
+        "  onboarding_depth: pending",
+        "  lite_primary_action: pending",
+        "  standard_deep_trigger_screen: pending",
+        "  deep_reality_check: pending",
+        "  post_autopilot_decision: pending",
+        "  privacy_business: pending",
+        "  remote_decision: pending",
     ]
     missing = [item for item in required if item not in state]
     if missing:
@@ -142,17 +206,30 @@ def check_onboarded_autopilot_state() -> None:
     state = read_text(state_path)
     required = [
         "autopilot:",
-        "  completed: true",
-        "  current_stage: done",
+        "  completed: false",
+        "  interview_completed: true",
         "  current_flow: null",
         "  last_completed_step: 10",
         "post_autopilot:",
+        "finalization:",
     ]
     missing = [item for item in required if item not in state]
     if missing:
-        fail("onboarded autopilot state", ", ".join(missing))
+        fail("pre-cleanup autopilot state", ", ".join(missing))
     else:
-        ok("onboarded autopilot state")
+        ok("pre-cleanup autopilot state")
+
+    allowed_finalization = (
+        "  current_stage: final_validation",
+        "  current_stage: cleanup_preview",
+        "  current_stage: cleanup_confirmed",
+        "  current_stage: cleanup_running",
+        "  current_stage: post_cleanup_validation",
+    )
+    if any(value in state for value in allowed_finalization):
+        ok("pre-cleanup finalization stage")
+    else:
+        fail("pre-cleanup finalization stage", "expected final_validation or later")
 
     if "  onboarding_depth: lite" in state:
         ok("onboarded flow recorded (lite)")
@@ -201,9 +278,10 @@ def check_onboarded_business() -> None:
 
 def check_onboarded_context_route() -> None:
     required_files = [
-        "AGENTS.md",
-        "PROJECT_STATE.md",
-        "ai-clone/INDEX.md",
+        ".codex/finalization-documents/AGENTS.md",
+        ".codex/finalization-documents/PROJECT_STATE.md",
+        ".codex/finalization-documents/README.md",
+        ".codex/finalization-documents/STRUCTURE.md",
     ]
     missing = [path for path in required_files if not (ROOT / path).exists()]
     if missing:
@@ -211,8 +289,8 @@ def check_onboarded_context_route() -> None:
         return
     ok("onboarded context entry files")
 
-    agents = read_text(ROOT / "AGENTS.md")
-    project_state = read_text(ROOT / "PROJECT_STATE.md")
+    agents = read_text(ROOT / ".codex/finalization-documents/AGENTS.md")
+    project_state = read_text(ROOT / ".codex/finalization-documents/PROJECT_STATE.md")
     checks = [
         ("AGENTS routes PROJECT_STATE", agents, "PROJECT_STATE.md"),
         ("AGENTS routes business index", agents, "business/INDEX.md"),
@@ -227,6 +305,226 @@ def check_onboarded_context_route() -> None:
         ok("onboarded context route")
 
 
+def check_unresolved_placeholders(onboarded: bool) -> None:
+    paths: list[Path] = []
+    if onboarded:
+        documents = ROOT / ".codex" / "finalization-documents"
+        if documents.exists():
+            paths.extend(path for path in documents.rglob("*") if path.is_file())
+        business = ROOT / "business"
+        if business.exists():
+            paths.extend(
+                path
+                for path in business.rglob("*")
+                if path.is_file() and "raw" not in path.relative_to(business).parts
+            )
+    else:
+        paths.extend(ROOT / relative for relative in PUBLIC_SURFACES if (ROOT / relative).is_file())
+
+    hits: list[str] = []
+    for path in paths:
+        if path.suffix.lower() not in TEXT_SUFFIXES:
+            continue
+        for line_no, line in enumerate(read_text(path).splitlines(), start=1):
+            if any(pattern.search(line) for pattern in PLACEHOLDER_PATTERNS):
+                hits.append(f"{rel(path)}:{line_no}:{line[:140]}")
+
+    if hits:
+        fail("unresolved placeholders", "\n  ".join(hits))
+    else:
+        ok("no unresolved placeholders on published surfaces")
+
+
+def load_onboarded_contract() -> dict[str, object] | None:
+    path = ROOT / "autopilot" / "finalization" / "onboarded-contract.json"
+    if not path.is_file():
+        fail("onboarded reference contract", rel(path))
+        return None
+    try:
+        contract = json.loads(read_text(path))
+    except json.JSONDecodeError as exc:
+        fail("onboarded reference contract", str(exc))
+        return None
+    if not isinstance(contract, dict) or contract.get("schema_version") != 1:
+        fail("onboarded reference contract", "expected schema_version 1")
+        return None
+    return contract
+
+
+def contract_path_forbidden(path: str, forbidden: list[str]) -> bool:
+    return any(
+        path.startswith(item) if item.endswith("/") else path == item
+        for item in forbidden
+    )
+
+
+def validate_flow_paths(
+    flow: str,
+    paths: set[str],
+    contract: dict[str, object],
+) -> list[str]:
+    problems: list[str] = []
+    common = contract.get("common_required_files")
+    flows = contract.get("flows")
+    if not isinstance(common, list) or not all(isinstance(item, str) for item in common):
+        return ["common_required_files must be a list of paths"]
+    if not isinstance(flows, dict) or not isinstance(flows.get(flow), dict):
+        return [f"missing flow contract: {flow}"]
+
+    settings = flows[flow]
+    required = [*common, *settings.get("required_files", [])]
+    missing = sorted(path for path in required if path not in paths)
+    if missing:
+        problems.append("missing: " + ", ".join(missing))
+
+    groups = settings.get("required_any", [])
+    for group in groups:
+        if not isinstance(group, list) or not any(path in paths for path in group):
+            problems.append("need one of: " + ", ".join(group))
+
+    forbidden = settings.get("forbidden_paths", [])
+    blocked = sorted(path for path in paths if contract_path_forbidden(path, forbidden))
+    if blocked:
+        problems.append("forbidden for flow: " + ", ".join(blocked))
+
+    working = {
+        path
+        for path in paths
+        if path.startswith("business/")
+        and path.endswith(".md")
+        and path != "business/life-metrics.md"
+        and not path.startswith("business/raw/")
+    }
+    expected_range = settings.get("working_markdown_files")
+    if (
+        not isinstance(expected_range, list)
+        or len(expected_range) != 2
+        or not all(isinstance(item, int) for item in expected_range)
+    ):
+        problems.append("working_markdown_files must contain min and max")
+    elif not expected_range[0] <= len(working) <= expected_range[1]:
+        problems.append(
+            f"working business files: expected {expected_range[0]}-{expected_range[1]}, got {len(working)}"
+        )
+
+    return problems
+
+
+def check_onboarded_reference_contract(onboarded: bool) -> None:
+    contract = load_onboarded_contract()
+    if contract is None:
+        return
+    flows = contract.get("flows")
+    if not isinstance(flows, dict) or set(flows) != {"lite", "standard", "deep"}:
+        fail("onboarded reference contract", "flows must be lite, standard and deep")
+        return
+
+    definition_problems: list[str] = []
+    for flow in ("lite", "standard", "deep"):
+        settings = flows.get(flow)
+        reference = settings.get("reference_minimum") if isinstance(settings, dict) else None
+        if not isinstance(reference, list) or not all(isinstance(item, str) for item in reference):
+            definition_problems.append(f"{flow}: reference_minimum must be a list of paths")
+            continue
+        definition_problems.extend(
+            f"{flow}: {problem}" for problem in validate_flow_paths(flow, set(reference), contract)
+        )
+
+    if definition_problems:
+        fail("onboarded reference contract", "\n  ".join(definition_problems))
+        return
+    ok("lite, standard and deep reference minimums")
+
+    if not onboarded:
+        return
+
+    state = read_text(ROOT / ".codex" / "autopilot-state.yml")
+    match = re.search(r"(?m)^  onboarding_depth: (lite|standard|deep)$", state)
+    if not match:
+        return
+    flow = match.group(1)
+    paths = {
+        rel(path)
+        for path in (ROOT / "business").rglob("*")
+        if path.is_file()
+    }
+    problems = validate_flow_paths(flow, paths, contract)
+
+    settings = flows[flow]
+    required_content = settings.get("required_content", {})
+    if isinstance(required_content, dict):
+        for relative, snippets in required_content.items():
+            path = ROOT / relative
+            if not path.is_file():
+                continue
+            text = read_text(path)
+            absent = [snippet for snippet in snippets if snippet not in text]
+            if absent:
+                problems.append(f"{relative} missing: {', '.join(absent)}")
+
+    if problems:
+        fail(f"onboarded flow output ({flow})", "\n  ".join(problems))
+    else:
+        ok(f"onboarded flow output ({flow})")
+
+
+def check_onboarding_trigger_contract() -> None:
+    required = {
+        "AGENTS.md": [
+            "обслуживает сам starter-template, не запускай пользовательский AUTOPILOT",
+            "Если файлов нет - Starter уже удалён, работай как с обычным проектом.",
+            "finalization.current_stage: interview",
+            "autopilot.interview_completed: false",
+            "post_autopilot.decision: running",
+            "не начинай интервью заново",
+            "Только если `autopilot.interview_completed: false`",
+        ],
+        "AUTOPILOT.md": [
+            "только если `autopilot.completed: false`",
+            "если пользователь просит аудит, оценку, список улучшений или обслуживает сам starter-template",
+            "не задавай вопросы заново",
+            "не объявляй успех",
+            "до следующего вопроса",
+            "business/raw/onboarding-notes.md",
+            "step1_project_recorded",
+        ],
+        "autopilot/flows/common.md": [
+            "до следующего вопроса",
+            "business/raw/onboarding-notes.md",
+            "первого действительно незавершённого вопроса",
+        ],
+        "autopilot/NEW_WINDOW_TEST.md": [
+            "внутри незавершённого шага",
+            "business/raw/onboarding-notes.md",
+            "не повторяет записанный вопрос",
+        ],
+    }
+    problems: list[str] = []
+    for relative, snippets in required.items():
+        text = read_text(ROOT / relative)
+        missing = [snippet for snippet in snippets if snippet not in text]
+        if missing:
+            problems.append(f"{relative} missing: {', '.join(missing)}")
+
+    resume_stages = [
+        "final_validation",
+        "cleanup_preview",
+        "cleanup_confirmed",
+        "cleanup_running",
+        "post_cleanup_validation",
+    ]
+    agents = read_text(ROOT / "AGENTS.md")
+    autopilot = read_text(ROOT / "AUTOPILOT.md")
+    for stage in resume_stages:
+        if stage not in agents or stage not in autopilot:
+            problems.append(f"resume stage is not aligned: {stage}")
+
+    if problems:
+        fail("onboarding trigger contract", "\n  ".join(problems))
+    else:
+        ok("onboarding trigger contract")
+
+
 def check_no_legacy_business_traces(files: list[Path]) -> None:
     allowed_prefixes = {
         "maintainer/history/",
@@ -234,7 +532,7 @@ def check_no_legacy_business_traces(files: list[Path]) -> None:
     allowed_files = {
         "CODEX_MIGRATION.md",
         "MIGRATION_BUSINESS_FOLDER.md",
-        "plans/2026-06-21-starter-technical-cleanup.md",
+        "maintainer/history/plans/2026-06-21-starter-technical-cleanup.md",
         "README.md",
         "TROUBLESHOOTING.md",
     }
@@ -369,6 +667,224 @@ def check_instruction_alignment() -> None:
         ok("business wiki-links guidance")
 
 
+def check_finalization_contract(onboarded: bool) -> None:
+    required_files = [
+        "autopilot/finalization/finalize.py",
+        "autopilot/finalization/onboarded-contract.json",
+        "autopilot/finalization/test_finalize.py",
+        "autopilot/finalization/test_release.py",
+        "scripts/release-check.py",
+        "autopilot/finalization/cleanup-manifest.json",
+        "templates/AGENTS.md.tmpl",
+        "templates/PROJECT_STATE.md.tmpl",
+        "templates/README.project.md.tmpl",
+        "templates/STRUCTURE.project.md.tmpl",
+    ]
+    missing_files = [path for path in required_files if not (ROOT / path).is_file()]
+    if missing_files:
+        fail("finalization files exist", ", ".join(missing_files))
+        return
+    ok("finalization files exist")
+
+    manifest_path = ROOT / "autopilot/finalization/cleanup-manifest.json"
+    try:
+        manifest = json.loads(read_text(manifest_path))
+    except json.JSONDecodeError as exc:
+        fail("cleanup manifest parses", str(exc))
+        return
+    if manifest.get("schema_version") != 1:
+        fail("cleanup manifest schema", "expected schema_version 1")
+        return
+    ok("cleanup manifest parses")
+
+    def entries(value: object, label: str) -> list[dict[str, str | None]]:
+        if not isinstance(value, list):
+            fail("cleanup manifest lists", f"{label} is not a list")
+            return []
+        parsed: list[dict[str, str | None]] = []
+        for item in value:
+            if isinstance(item, str):
+                parsed.append({"path": item, "sha256": None})
+            elif isinstance(item, dict) and isinstance(item.get("path"), str):
+                digest = item.get("sha256")
+                parsed.append(
+                    {
+                        "path": item["path"],
+                        "sha256": digest if isinstance(digest, str) else None,
+                    }
+                )
+            else:
+                fail("cleanup manifest entries", f"invalid {label} entry: {item!r}")
+        return parsed
+
+    categories: list[tuple[str, list[dict[str, str | None]]]] = [
+        ("keep", entries(manifest.get("keep"), "keep")),
+        ("rewrite", entries(manifest.get("rewrite"), "rewrite")),
+        ("remove", entries(manifest.get("remove"), "remove")),
+        ("transient_remove", entries(manifest.get("transient_remove"), "transient_remove")),
+    ]
+    conditional = manifest.get("conditional")
+    expected_groups = {
+        "ai_clone",
+        "mastery",
+        "prompts",
+        "experiments",
+        "repo_skills",
+        "community_files",
+        "pre_commit_sample",
+    }
+    actual_groups: set[str] = set()
+    if not isinstance(conditional, list):
+        fail("cleanup conditional groups", "conditional is not a list")
+        conditional = []
+    for group in conditional:
+        if not isinstance(group, dict) or not isinstance(group.get("name"), str):
+            fail("cleanup conditional groups", f"invalid group: {group!r}")
+            continue
+        name = group["name"]
+        actual_groups.add(name)
+        categories.append((f"conditional.{name}", entries(group.get("entries"), name)))
+    if actual_groups != expected_groups:
+        fail(
+            "cleanup conditional groups",
+            f"expected {sorted(expected_groups)}, got {sorted(actual_groups)}",
+        )
+    else:
+        ok("cleanup conditional groups")
+
+    seen: dict[str, str] = {}
+    path_errors: list[str] = []
+    hash_errors: list[str] = []
+    for category, category_entries in categories:
+        for entry in category_entries:
+            path = entry["path"] or ""
+            if (
+                not path
+                or "\\" in path
+                or path.startswith("/")
+                or re.search(r"(^|/)\.\.(/|$)", path)
+                or any(character in path for character in "*?[]")
+            ):
+                path_errors.append(f"{category}: {path!r}")
+                continue
+            if path in seen:
+                path_errors.append(f"{path} is in {seen[path]} and {category}")
+            else:
+                seen[path] = category
+            absolute = ROOT / path
+            if category in {"keep", "rewrite"} and not absolute.is_file():
+                path_errors.append(f"{category}: missing {path}")
+            if category == "remove" or category.startswith("conditional."):
+                expected_hash = entry["sha256"]
+                if not expected_hash or not re.fullmatch(r"[0-9a-f]{64}", expected_hash):
+                    hash_errors.append(f"{path}: missing sha256")
+                elif absolute.is_file() and normalized_hash(absolute) != expected_hash:
+                    hash_errors.append(f"{path}: stale sha256")
+
+    if path_errors:
+        fail("cleanup manifest exact paths", "\n  ".join(path_errors))
+    else:
+        ok("cleanup manifest exact paths")
+    if hash_errors:
+        fail("cleanup manifest hashes", "\n  ".join(hash_errors))
+    else:
+        ok("cleanup manifest hashes")
+
+    rewrite_paths = {entry["path"] for label, values in categories if label == "rewrite" for entry in values}
+    expected_rewrite = {"AGENTS.md", "PROJECT_STATE.md", "README.md", "STRUCTURE.md"}
+    if rewrite_paths != expected_rewrite:
+        fail("cleanup rewrite set", f"got {sorted(rewrite_paths)}")
+    else:
+        ok("cleanup rewrite set")
+
+    removal_paths = {
+        entry["path"]
+        for label, values in categories
+        if label == "remove" or label.startswith("conditional.")
+        for entry in values
+    }
+    protected = sorted(
+        path
+        for path in removal_paths
+        if path == ".git"
+        or path.startswith(".git/")
+        or path == ".env"
+        or path.startswith(".env.")
+        or path.endswith(".local.toml")
+        or path == "business"
+        or path.startswith("business/")
+    )
+    if protected:
+        fail("cleanup protected paths", ", ".join(protected))
+    else:
+        ok("cleanup protected paths")
+
+    finalizer_text = read_text(ROOT / "AUTOPILOT.md")
+    required_commands = [
+        "finalize.py --root . preview",
+        "finalize.py --root . apply --approve",
+        "finalize.py --root . status",
+    ]
+    absent_commands = [item for item in required_commands if item not in finalizer_text]
+    if absent_commands:
+        fail("AUTOPILOT finalization commands", ", ".join(absent_commands))
+    else:
+        ok("AUTOPILOT finalization commands")
+
+    answer_keys = [
+        "project_identity",
+        "primary_audience",
+        "nearest_result",
+        "first_scope",
+        "next_step",
+        "onboarding_depth",
+        "lite_primary_action",
+        "lite_trust",
+        "lite_style",
+        "standard_user_problem",
+        "standard_mvp_boundary",
+        "standard_user_path",
+        "standard_pricing",
+        "standard_objections",
+        "standard_channels",
+        "standard_deep_trigger_screen",
+        "deep_mvp_boundaries",
+        "deep_roles",
+        "deep_data",
+        "deep_integrations",
+        "deep_payments",
+        "deep_files_audit",
+        "deep_ai_boundary",
+        "deep_trust_security",
+        "deep_economics",
+        "deep_marketing_assets",
+        "deep_reality_check",
+        "post_autopilot_decision",
+        "privacy_business",
+        "privacy_ai_clone",
+        "privacy_mastery",
+        "remote_decision",
+    ]
+    state = read_text(ROOT / ".codex/autopilot-state.yml")
+    if onboarded:
+        missing_answers = [
+            key
+            for key in answer_keys
+            if not re.search(
+                rf"(?m)^  {re.escape(key)}: (pending|answered|unknown_for_now|not_applicable)$",
+                state,
+            )
+        ]
+        label = "answer-state schema"
+    else:
+        missing_answers = [key for key in answer_keys if f"  {key}: pending" not in state]
+        label = "answer-state baseline"
+    if missing_answers:
+        fail(label, ", ".join(missing_answers))
+    else:
+        ok(label)
+
+
 def check_gitattributes_policy() -> None:
     path = ROOT / ".gitattributes"
     if not path.exists():
@@ -440,6 +956,47 @@ def check_hooks_json() -> None:
         fail("PreToolUse hook registration", ", ".join(missing))
     else:
         ok("PreToolUse hook registration")
+
+
+def check_release_entrypoint() -> None:
+    script_path = ROOT / "scripts" / "release-check.py"
+    workflow_path = ROOT / ".github" / "workflows" / "security-audit.yml"
+    required_script_snippets = [
+        "scripts/starter-lint.py",
+        "unittest",
+        "test_*.py",
+        "security-audit",
+        "autopilot/NEW_WINDOW_TEST.md",
+    ]
+    required_workflow_snippets = [
+        "ubuntu-latest",
+        "windows-latest",
+        "python scripts/release-check.py",
+    ]
+    problems: list[str] = []
+    if not script_path.is_file():
+        problems.append(rel(script_path))
+    else:
+        script = read_text(script_path)
+        problems.extend(
+            f"release-check missing {snippet}"
+            for snippet in required_script_snippets
+            if snippet not in script
+        )
+    if not workflow_path.is_file():
+        problems.append(rel(workflow_path))
+    else:
+        workflow = read_text(workflow_path)
+        problems.extend(
+            f"workflow missing {snippet}"
+            for snippet in required_workflow_snippets
+            if snippet not in workflow
+        )
+
+    if problems:
+        fail("release check entrypoint", "\n  ".join(problems))
+    else:
+        ok("release check entrypoint and CI matrix")
 
 
 def check_markdown_links(files: list[Path]) -> None:
@@ -517,6 +1074,10 @@ def check_hook_policy() -> None:
 
 
 def check_git_diff() -> None:
+    inside = run(["git", "rev-parse", "--is-inside-work-tree"])
+    if inside.returncode != 0 or inside.stdout.strip() != "true":
+        ok("git diff --check skipped outside a Git work tree")
+        return
     completed = run(["git", "diff", "--check"])
     if completed.returncode != 0:
         fail("git diff --check", completed.stdout + completed.stderr)
@@ -562,7 +1123,7 @@ def parse_args() -> tuple[bool, Path]:
     parser.add_argument(
         "--onboarded",
         action="store_true",
-        help="check a copy after AUTOPILOT completed instead of a pristine starter-template",
+        help="check a copy after the interview and before cleanup",
     )
     parser.add_argument(
         "--root",
@@ -577,15 +1138,20 @@ def parse_args() -> tuple[bool, Path]:
 def main() -> int:
     global ROOT
 
+    failures.clear()
     onboarded, root = parse_args()
     ROOT = root
-    mode = "onboarded project" if onboarded else "starter-template"
+    mode = "pre-cleanup project" if onboarded else "starter-template"
 
     print("Codex Starter lint")
     print("===================")
     print(f"Mode: {mode}")
     print(f"Root: {ROOT}")
     files = iter_files()
+    if not check_utf8(files):
+        print("")
+        print(f"RESULT: {len(failures)} problem(s) found.")
+        return 1
     if onboarded:
         check_onboarded_autopilot_state()
         check_onboarded_business()
@@ -593,10 +1159,15 @@ def main() -> int:
     else:
         check_autopilot_state()
         check_business_clean()
+    check_unresolved_placeholders(onboarded)
+    check_onboarded_reference_contract(onboarded)
+    check_onboarding_trigger_contract()
     check_no_legacy_business_traces(files)
     check_instruction_alignment()
+    check_finalization_contract(onboarded)
     check_gitattributes_policy()
     check_hooks_json()
+    check_release_entrypoint()
     check_markdown_links(files)
     check_mojibake(files)
     check_hook_policy()

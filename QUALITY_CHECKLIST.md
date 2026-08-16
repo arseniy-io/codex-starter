@@ -10,8 +10,8 @@
 - [ ] `PROJECT_STATE.md` короткий и показывает текущий фокус, первые файлы для чтения и следующий шаг.
 - [ ] `AUTOPILOT.md` можно пройти по шагам без чтения исходного README.
 - [ ] `AUTOPILOT.md` выбирает один масштаб `lite`, `standard` или `deep`, а подробности шага 8 лежат в `autopilot/flows/`.
-- [ ] Перед заменой финальных `AGENTS.md` и `PROJECT_STATE.md` AUTOPILOT показывает preview и ждёт подтверждения.
-- [ ] В чистом starter `.codex/autopilot-state.yml` содержит `autopilot.completed: false`, `autopilot.current_stage: start`, `autopilot.current_flow: null`, `autopilot.last_completed_step: 0`, `autopilot.last_completed_substep: null`, `autopilot.started_at: null`, `autopilot.onboarding_depth: null` и не содержит заполненных `autopilot.os`, `autopilot.project_type`, `autopilot.stack`.
+- [ ] Четыре финальных документа сначала создаются в `.codex/finalization-documents/`, а корневые версии меняются только при подтверждённой очистке.
+- [ ] В чистом Starter state содержит начальные секции `autopilot`, `post_autopilot`, `finalization` и `answer_states`; интервью и финализация ещё не отмечены завершёнными.
 - [ ] `POST_AUTOPILOT.md` можно пройти после первого онбординга, не раздувая `AGENTS.md`.
 
 ## Adaptivity
@@ -26,8 +26,8 @@
 - [ ] Сложный продукт с ролями, данными, платежами, API, файлами или интеграциями получает отдельный risk/trust слой.
 - [ ] В `deep` есть блок `MVP vs later`, а новые файлы создаются только если влияют на MVP, trust/security или ближайшее решение.
 - [ ] `PROJECT_STATE.md` для `deep` содержит короткую карту `Scope/MVP`, `Data`, `Roles`, `Integrations`, `Trust/Security`, `MVP vs later`.
-- [ ] AUTOPILOT нельзя считать завершённым, пока `.codex/autopilot-state.yml` не показывает `autopilot.completed: true`, `autopilot.current_stage: done`, `autopilot.last_completed_step: 10`.
-- [ ] Если папка не является git-репозиторием, AUTOPILOT пропускает stage/commit без ошибки и не запускает `git init` автоматически.
+- [ ] Последний ответ завершает только интервью. Starter считается завершённым после проверки очищенного проекта, после чего временный state удаляется.
+- [ ] Если папка не является Git-репозиторием, AUTOPILOT не запускает `git init` и требует отдельное подтверждение очистки без простого отката.
 - [ ] `POST_AUTOPILOT.md` явно предлагается как необязательный второй этап, особенно для `lite`.
 - [ ] В личном экспертном проекте `business/`, `ai-clone/` и `mastery/` не смешиваются.
 - [ ] В `business/INDEX.md` есть минимальный набор файлов, которые Codex обычно должен читать дальше.
@@ -70,15 +70,31 @@
 - [ ] `business/` игнорируется по умолчанию и снимается с tracking, если была случайно tracked.
 - [ ] После заполнения `ai-clone/` privacy-gate зафиксировал решение: private tracked, ignored или safe summary only.
 - [ ] `mastery/` не содержит длинных копий copyrighted-текста.
-- [ ] Финальный commit делается только после просмотра staged-файлов и отдельного подтверждения пользователя.
-- [ ] Pre-commit hook блокирует секреты и случайный коммит `business/`.
+- [ ] Финализация не делает commit, push и не меняет remote.
+- [ ] Если pre-commit hook реально установлен, прямой smoke-test подтверждает его работу. Один sample не считается установленной защитой.
 - [ ] User project safety check проходит: `scripts/user-project-safety-check.ps1` на Windows или `scripts/user-project-safety-check.sh` в bash/Git Bash.
 - [ ] Starter lint проходит: `python scripts/starter-lint.py`.
-- [ ] Для уже пройденного AUTOPILOT проходит onboarded lint: `python scripts/starter-lint.py --onboarded`.
+- [ ] После интервью и до очистки проходит pre-cleanup lint: `python scripts/starter-lint.py --onboarded`.
+- [ ] Единый выпускной контроль проходит: `python scripts/release-check.py`.
+- [ ] Приёмочные тесты финализации и намеренных поломок проходят через выпускной контроль.
 - [ ] `.gitattributes` фиксирует LF для Markdown, YAML, JSON, Python, PowerShell и shell-скриптов.
 - [ ] Перед публикацией starter проходит publication audit: `scripts/security-audit.ps1` или `scripts/security-audit.sh`.
 - [ ] `.codex/hooks.json` подключает `PreToolUse` hook для shell-команд.
 - [ ] `.codex/hooks/pre_tool_use_policy.py` блокирует опасные shell/PowerShell примеры.
+
+## Finalization
+
+- [ ] У обязательных вопросов выбранного flow есть точные состояния, а блокирующий ответ нельзя оставить `unknown_for_now`.
+- [ ] POST_AUTOPILOT либо завершён, либо явно пропущен.
+- [ ] Privacy, Git remote и условные папки имеют явные решения без секретов в decisions-файле.
+- [ ] Манифест содержит только точные относительные пути без glob и пересечений категорий.
+- [ ] У каждого удаляемого известного файла есть актуальная контрольная сумма.
+- [ ] `.git/`, `.env*`, локальный Codex config и `business/` не входят в удаление.
+- [ ] Preview показывает точный `preview_id` и не меняет рабочие документы.
+- [ ] Изменение дерева отменяет старый preview.
+- [ ] Неизвестный или изменённый файл сохраняется либо останавливает очистку.
+- [ ] Прерванный `apply` безопасно продолжается с тем же подтверждённым preview.
+- [ ] После очистки нет AUTOPILOT, state и служебных папок Starter, а новое окно не запускает онбординг.
 
 ## Example
 
@@ -95,9 +111,11 @@
 - [ ] Проверить, что AUTOPILOT стартует и ведёт по шагам.
 - [ ] Проверить, что AUTOPILOT выбирает один масштаб `lite`, `standard` или `deep`.
 - [ ] Проверить, что Codex читает `autopilot/flows/common.md` и только выбранный flow.
-- [ ] Проверить, что после AUTOPILOT `POST_AUTOPILOT.md` предлагается как опциональный второй этап, а не обязательное продолжение.
+- [ ] Проверить, что после интервью `POST_AUTOPILOT.md` предлагается как опциональный второй этап, а не обязательное продолжение.
 - [ ] Проверить, что `plan → implement → verify → retro` объясняется без обязательного `hello-test` в корне проекта.
-- [ ] В новом окне Codex может назвать текущий фокус и следующий шаг, не читая всю `business/`.
-- [ ] После живого AUTOPILOT `python scripts/starter-lint.py --onboarded` проходит, а обычный `python scripts/starter-lint.py` остаётся проверкой чистого template.
+- [ ] До очистки `python scripts/starter-lint.py --onboarded` проходит, а обычный lint остаётся проверкой чистого template.
+- [ ] В отдельной копии preview подтверждён, очистка завершена, а неизвестный пользовательский файл сохранён.
+- [ ] В новом окне очищенный проект может назвать текущий фокус и следующий шаг, не читая всю `business/` и не запуская онбординг.
 - [ ] Для публикации starter пройти `autopilot/NEW_WINDOW_TEST.md` и записать один главный следующий пункт улучшения.
-- [ ] Для публикации starter пройти `python scripts/starter-lint.py` перед `security-audit`.
+- [ ] Для публикации starter пройти `python scripts/release-check.py`.
+- [ ] Не считать успешный CI заменой живому тесту нового окна.

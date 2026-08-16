@@ -39,6 +39,7 @@ function Get-AuditFiles {
             $path = $_.FullName
             $path -notmatch "\\\.git\\" -and
             $path -notmatch "\\node_modules\\" -and
+            $path -notmatch "\\__pycache__\\" -and
             $path -notmatch "\\scripts\\" -and
             $path -notmatch "\\hooks\\"
         }

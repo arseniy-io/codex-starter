@@ -5,17 +5,20 @@
 *.pem
 *.key
 
-# business/ создаётся AUTOPILOT локально и может содержать стратегию,
-# экономику, клиентов, raw-транскрипты и другие приватные данные проекта.
-# Пример структуры смотри в examples/ и шаблонах, а не в корневой business/.
+# business/ может содержать стратегию, экономику, клиентов,
+# raw-транскрипты и другие приватные данные проекта.
 /business/
 
-# ai-clone/ и mastery/ в шаблоне тоже плейсхолдеры. После POST_AUTOPILOT.md реши:
-# коммитить их только в приватный repo или снять с tracking, если там личные данные.
+# Если ai-clone/ или mastery/ заполнены личными данными, отдельно реши,
+# можно ли хранить их в текущем репозитории.
 
 # Локальные настройки Codex
 .codex/config.local.toml
 .codex/*.local.toml
+.codex/finalization-decisions.json
+.codex/finalization-preview.json
+.codex/finalization-runtime.json
+.codex/finalization-documents/
 
 # Зависимости
 node_modules/
@@ -45,6 +48,10 @@ yarn-debug.log*
 
 # Тесты и кэши
 .cache/
+.tmp-finalization-tests/
+.pytest_cache/
+__pycache__/
+*.py[cod]
 coverage/
 .nyc_output/
 .vitest-cache/
@@ -53,7 +60,7 @@ coverage/
 playwright-report/
 test-results/
 
-# Внутренние рабочие файлы автора шаблона (не публикуются)
+# Локальные рабочие отчёты, которые не публикуются
 TEST-PROTOCOL.md
 PUBLICATION-CHECKLIST.md
 retrospectives/*deep-review*

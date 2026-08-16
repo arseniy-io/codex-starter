@@ -1,13 +1,35 @@
-# Changelog
+# История изменений
 
-## Unreleased - Codex adaptation
+## v1.0.0 - 2026-08-16
 
-- Replaced `CLAUDE.md` with `AGENTS.md`.
-- Added `.codex/` project settings and hook-policy scaffold.
-- Added `.agents/skills/` for repo-local Codex skills.
-- Rewrote README, AUTOPILOT, troubleshooting, templates, setup prompts, and security references for Codex.
-- Kept the original methodology: `business/`, `plans/`, `retrospectives/`, prompt library, pre-commit secret checks.
+Первая стабильная версия Codex Starter.
 
-## Source lineage
+### Главное
 
-This project started from `artemiimillier/claude-code-starter` and was adapted for Codex.
+- Добавлен полный путь `привет -> интервью -> проверка -> точный preview -> подтверждение -> очистка -> обычный проект`.
+- Сделаны три режима настройки: `lite`, `standard` и `deep`.
+- Состояние онбординга вынесено в `.codex/autopilot-state.yml`; после каждого ответа сохраняется безопасная точка продолжения.
+- Финализация удаляет только известные неизменённые файлы Starter и сохраняет неизвестные пользовательские файлы.
+- Корневые документы после очистки относятся только к настоящему проекту.
+- Добавлены project hooks, Windows/Linux проверки безопасности и единая команда `python scripts/release-check.py`.
+- Основной способ получения - GitHub Template, запасной - ZIP стабильного релиза.
+
+### Проверено
+
+- Полные `lite` и `deep` онбординги в отдельных копиях с неровными человеческими ответами.
+- Git-копия и ZIP-подобная копия без Git.
+- Очистка, сохранение неизвестных файлов, пауза внутри интервью и продолжение в новом окне.
+- Новые задачи после очистки сразу понимают проект и не запускают Starter повторно.
+- Автоматический выпускной контроль: lint, 30 тестов, проверка ссылок, UTF-8, hook-policy и publication/security audit.
+
+### Ограничения v1
+
+- Живая приёмка выполнена только в приложении Codex на Windows, в нативном PowerShell и на файловой системе Windows.
+- macOS, Linux, WSL, Codex CLI, IDE extension и cloud-задачи пока не объявляются проверенными средами.
+- Project hook требует ручного доверия в новом окружении; smoke-test скрипта не доказывает, что приложение разрешило hook.
+- Starter не меняет remote, не создаёт Git автоматически и не выполняет commit или push без отдельной команды пользователя.
+- Интервью нельзя использовать для передачи паролей, токенов, API-ключей и содержимого `.env`.
+
+## Происхождение
+
+Проект начался как адаптация `artemiimillier/claude-code-starter` для Codex. Исходная методология и авторство сохранены в `LICENSE` и `README.md`.
