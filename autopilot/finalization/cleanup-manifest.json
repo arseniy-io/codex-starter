@@ -414,7 +414,7 @@
     },
     {
       "path": "scripts/release-check.py",
-      "sha256": "e7b55f9b5a71b495d6bc8243f869844d57ddac88cb38109c1733a26a05db2481"
+      "sha256": "cae8068225409eb2e0be6701c07b8cde345caab99a0d6755ddea03207183c2e1"
     },
     {
       "path": "scripts/starter-lint.py",

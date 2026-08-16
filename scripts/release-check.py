@@ -13,6 +13,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def configure_utf8_output() -> None:
+    """Keep Russian diagnostics readable on Windows CI and local consoles."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 def run_check(label: str, command: list[str]) -> bool:
     print("")
     print(f"=== {label} ===")
@@ -47,6 +55,7 @@ def security_command() -> list[str] | None:
 
 
 def main() -> int:
+    configure_utf8_output()
     checks = [
         (
             "Структура и публичные материалы Starter",
