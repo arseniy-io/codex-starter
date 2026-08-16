@@ -418,7 +418,7 @@
     },
     {
       "path": "scripts/starter-lint.py",
-      "sha256": "ceeeac3434459ca6f5da90c25d5173364a66a28e5f32a6c5fa474462f6b19663"
+      "sha256": "684924141fa25554561c7e0e0c4495b17b45a7dd45fa61d79aa892ea29b587d8"
     },
     {
       "path": "templates/AGENTS.md.tmpl",
