@@ -71,6 +71,7 @@ TEXT_SUFFIXES = {
     ".py",
     ".ps1",
     ".sh",
+    ".txt",
     ".sample",
 }
 FORBIDDEN_FINAL_MARKERS = (

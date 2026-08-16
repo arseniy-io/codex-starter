@@ -34,7 +34,7 @@
     },
     {
       "path": "autopilot/finalization/finalize.py",
-      "sha256": "d62be25a653e0ea54a7be409f45bafbc8942aa9b7ed59230d818f97bbac42e47"
+      "sha256": "e6f7226f24dc03fea82880e91fd637b958a20bbff9242e3373121f0f3955e63f"
     },
     {
       "path": "autopilot/finalization/onboarded-contract.json",
@@ -42,7 +42,7 @@
     },
     {
       "path": "autopilot/finalization/test_finalize.py",
-      "sha256": "9cdc885c278366427fd468f5d0bafeff7f31add374572ab8b8011268f585076c"
+      "sha256": "9d99bdd22806582dd92f58394458950a54e8d20b8e22b9e9323f4cd99aa9a97f"
     },
     {
       "path": "autopilot/finalization/test_release.py",

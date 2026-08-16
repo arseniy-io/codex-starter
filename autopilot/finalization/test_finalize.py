@@ -230,6 +230,15 @@ class FinalizationTest(unittest.TestCase):
         self.assertEqual((self.project / "AGENTS.md").read_bytes(), agents_before)
         self.assertEqual((self.project / "AUTOPILOT.md").read_bytes(), autopilot_before)
 
+    def test_text_hashes_ignore_windows_line_endings(self) -> None:
+        target = self.project / "maintainer/releases/v1.0.0-commit-allowlist.txt"
+        content = target.read_text(encoding="utf-8")
+        target.write_text(content, encoding="utf-8", newline="\r\n")
+        self.assertIn(b"\r\n", target.read_bytes())
+
+        result = self.run_helper("preview")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_status_reports_interrupted_interview_checkpoint(self) -> None:
         state_path = self.project / ".codex/autopilot-state.yml"
         state = state_path.read_text(encoding="utf-8")
